@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Form 2026</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #eef2f5;
+      background-image: linear-gradient(rgba(240, 244, 248, 0.85), rgba(240, 244, 248, 0.85)), 
+                        url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      padding: 40px 20px;
+      color: #333;
+    }
+
+    .form-container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .card-header-bar {
+      height: 6px;
+      background-color: #0078d4;
+    }
+
+    .header-content {
+      padding: 30px 40px 20px;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 20px;
+      color: #2b579a;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .form-title {
+      font-size: 26px;
+      font-weight: 600;
+      color: #201f1e;
+      margin-bottom: 8px;
+    }
+
+    .section-tag {
+      background-color: #f3f2f1;
+      padding: 8px 40px;
+      font-size: 12px;
+      color: #605e5c;
+      border-bottom: 1px solid #edebe9;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .section-body {
+      padding: 30px 40px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #323130;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .section-subtitle {
+      font-size: 14px;
+      color: #605e5c;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .section-link {
+      font-size: 13px;
+      color: #0078d4;
+      text-decoration: underline;
+      display: inline-block;
+      margin-bottom: 20px;
+      word-break: break-all;
+    }
+
+    .question-item {
+      margin-top: 24px;
+    }
+
+    .question-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #323130;
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .required {
+      color: #a80000;
+      margin-left: 2px;
+    }
+
+    .question-tip {
+      font-size: 13px;
+      color: #605e5c;
+      margin-bottom: 8px;
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #8a8886;
+      border-radius: 2px;
+      font-size: 14px;
+      background-color: #faf9f8;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: #0078d4;
+      background-color: #ffffff;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .radio-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #323130;
+      cursor: pointer;
+    }
+
+    .radio-label input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #0078d4;
+      cursor: pointer;
+    }
+
+    .file-upload-box {
+      margin-top: 10px;
+    }
+
+    .upload-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border: 1px solid #8a8886;
+      background-color: #ffffff;
+      color: #323130;
+      border-radius: 2px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .upload-btn:hover {
+      background-color: #f3f2f1;
+    }
+
+    .file-limit-text {
+      font-size: 11px;
+      color: #a19f9d;
+      margin-top: 6px;
+    }
+
+    .dynamic-section {
+      display: none;
+    }
+
+    .submit-btn-area {
+      margin-top: 24px;
+      text-align: right;
+    }
+
+    .submit-btn {
+      background-color: #0078d4;
+      color: #ffffff;
+      border: none;
+      padding: 10px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      background-color: #106ebe;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <form id="payrollForm">
+    <!-- Header & Section 1 -->
+    <div class="card">
+      <div class="card-header-bar"></div>
+      <div class="header-content">
+        <div class="logo-area">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg>
+          WISDOM
+        </div>
+        <h1 class="form-title">Financial Form 2026</h1>
+      </div>
+      <div class="section-tag">
+        <span>Section 1</span>
+        <span>•••</span>
+      </div>
+      <div class="section-body">
+        <h2 class="section-title">僅供財務部門使用</h2>
+        <p class="section-subtitle">For use by the finance dept. only</p>
+
+        <div class="question-item">
+          <label class="question-label">1. 合約<br>Contract <span class="required">*</span></label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="contract_type" value="hk" onchange="handleBranch(this.value)" required>
+              香港 Hong Kong
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="contract_type" value="tw" onchange="handleBranch(this.value)">
+              台灣 Taiwan
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="contract_type" value="sg" onchange="handleBranch(this.value)">
+              新加坡 Singapore
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="contract_type" value="hk_tw" onchange="handleBranch(this.value)">
+              香港和台灣 Hong Kong and Taiwan
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="contract_type" value="tw_fx_local" onchange="handleBranch(this.value)">
+              台灣外幣帳戶 和 台灣本地帳戶 Taiwan foreign &amp; local
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="contract_type" value="hk_sg" onchange="handleBranch(this.value)">
+              香港和新加坡 Hong Kong and Singapore
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: HK Only -->
+    <div class="card dynamic-section" id="sec-hk">
+      <div class="section-tag"><span>Section 2</span><span>•••</span></div>
+      <div class="section-body">
+        <h2 class="section-title">香港帳戶 - 薪資匯款</h2>
+        <p class="section-subtitle">Hong Kong account - Payroll<br>請填寫英文 【Please fill in English】</p>
+
+        <div class="question-item">
+          <label class="question-label">2. 銀行名稱<br>Bank Name</label>
+          <div class="question-tip">Tip: 請填寫英文 【Please fill in English】 <span class="required">*</span></div>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">3. 收款人名稱（必須與僱員證件同名）<br>Bank Account Holder Name (Must be same name as displayed in the employee's identity document)</label>
+          <div class="question-tip">Tip: 請填寫英文 【Please fill in English】 <span class="required">*</span></div>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">4. 銀行帳號<br>Bank Account No. (Prefer Multi-Currency a/c) <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Taiwan Only -->
+    <div class="card dynamic-section" id="sec-tw">
+      <div class="section-tag"><span>Section 3</span><span>•••</span></div>
+      <div class="section-body">
+        <h2 class="section-title">台灣帳戶 - 薪資匯款</h2>
+        <p class="section-subtitle">Taiwan account - Payroll</p>
+        <a class="section-link" href="https://www.hs.ntnu.edu.tw/static/webroot/G162269154830558/application/NN168925876412496.pdf" target="_blank">台灣銀行 分行代碼(7碼) 查詢連結</a>
+
+        <div class="question-item">
+          <label class="question-label">5. 銀行名稱<br>Bank Name <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">6. 收款人名稱（必須與僱員證件同名）<br>Bank Account Holder Name (Must be same name as displayed in the employee's identity document) <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">7. 銀行帳號<br>Bank Account No. (Prefer Multi-Currency a/c) <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">8. 銀行分行代碼 (7碼)<br>Bank branch code (7 digits)<br>範例：【0130501】 <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Singapore Only -->
+    <div class="card dynamic-section" id="sec-sg">
+      <div class="section-tag"><span>Section 4</span><span>•••</span></div>
+      <div class="section-body">
+        <h2 class="section-title">新加坡帳戶 - 薪資匯款</h2>
+        <p class="section-subtitle">Singapore account - Payroll</p>
+
+        <div class="question-item">
+          <label class="question-label">9. 銀行名稱<br>Bank Name</label>
+          <div class="question-tip">Tip: 請填寫英文 【Please fill in English】 <span class="required">*</span></div>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">10. 收款人名稱（必須與僱員證件同名）<br>Bank Account Holder Name (Must be same name as displayed in the employee's identity document)</label>
+          <div class="question-tip">Tip: 請填寫英文 【Please fill in English】 <span class="required">*</span></div>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">11. 銀行帳號<br>Bank Account No. (Prefer Multi-Currency a/c) <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 6: HK & Taiwan -->
+    <div class="card dynamic-section" id="sec-hk-tw">
+      <div class="section-tag"><span>Section 6</span><span>•••</span></div>
+      <div class="section-body">
+        <h2 class="section-title">香港本地帳戶 和 台灣本地帳戶 - 薪資匯款</h2>
+        <p class="section-subtitle">Hong Kong account and Taiwan account - Payroll</p>
+        <a class="section-link" href="https://www.hs.ntnu.edu.tw/static/webroot/G162269154830558/application/NN168925876412496.pdf" target="_blank">台灣銀行 分行代碼(7碼) 查詢連結</a>
+
+        <div class="question-item">
+          <label class="question-label">13. 【香港本地帳戶】銀行名稱<br>Bank Name</label>
+          <div class="question-tip">Tip: 請填寫英文 【Please fill in English】 <span class="required">*</span></div>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">14. 【香港本地帳戶】收款人名稱（必須與僱員證件同名）<br>Bank Account Holder Name (Must be same name as displayed in the employee's identity document)</label>
+          <div class="question-tip">Tip: 請填寫英文 【Please fill in English】 <span class="required">*</span></div>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">15. 【香港本地帳戶】銀行帳號<br>Bank Account No. (Prefer Multi-Currency a/c) <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">16. 【台灣本地帳戶】銀行名稱<br>Bank Name <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">17. 【台灣本地帳戶】收款人名稱（必須與僱員證件同名）<br>Bank Account Holder Name (Must be same name as displayed in the employee's identity document) <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">18. 【台灣本地帳戶】銀行帳號<br>Bank Account No. (Prefer Multi-Currency a/c) <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">19. 【台灣本地帳戶】銀行分行代碼 (7碼)<br>Bank branch code (7 digits)<br>範例：【0130501】 <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 7: Taiwan Foreign & Local -->
+    <div class="card dynamic-section" id="sec-tw-fx">
+      <div class="section-tag"><span>Section 7</span><span>•••</span></div>
+      <div class="section-body">
+        <h2 class="section-title">台灣外幣帳戶 和 台灣本地帳戶 - 薪資匯款</h2>
+        <p class="section-subtitle">Taiwan foreign account and loacl account - Payroll</p>
+        <a class="section-link" href="https://www.hs.ntnu.edu.tw/static/webroot/G162269154830558/application/NN168925876412496.pdf" target="_blank">台灣銀行 分行代碼(7碼) 查詢連結</a>
+
+        <div class="question-item">
+          <label class="question-label">20. 【台灣外幣帳戶】銀行名稱<br>Bank Name <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">21. 【台灣外幣帳戶】收款人名稱（必須與僱員證件同名）<br>Bank Account Holder Name (Must be same name as displayed in the employee's identity document) <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">22. 【台灣外幣帳戶】銀行帳號<br>Bank Account No. (Prefer Multi-Currency a/c) <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">23. 【台灣外幣帳戶】Swift Code<br>範例：【UWCBTWTP050】 <span class="required">*</span></label>
+          <a class="section-link" href="https://swiftcode.info/" target="_blank" style="margin-bottom: 8px;">https://swiftcode.info/</a>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">24. 【本地帳戶】銀行名稱<br>Bank Name <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">25. 【本地帳戶】收款人名稱（必須與僱員證件同名）<br>Bank Account Holder Name (Must be same name as displayed in the employee's identity document) <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">26. 【本地帳戶】銀行帳號<br>Bank Account No. (Prefer Multi-Currency a/c) <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">27. 【本地帳戶】銀行分行代碼 (7碼)<br>Bank branch code (7 digits)<br>範例：【0130501】 <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 8: HK & SG -->
+    <div class="card dynamic-section" id="sec-hk-sg">
+      <div class="section-tag"><span>Section 8</span><span>•••</span></div>
+      <div class="section-body">
+        <h2 class="section-title">香港帳戶 和 新加坡帳戶 - 薪資匯款</h2>
+        <p class="section-subtitle">Hong Kong account and Singapore account - Payroll<br>Tip: 請填寫英文 【Please fill in English】</p>
+
+        <div class="question-item">
+          <label class="question-label">28. 【香港】銀行名稱<br>Bank Name</label>
+          <div class="question-tip">Tip: 請填寫英文 【Please fill in English】 <span class="required">*</span></div>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">29. 【香港】收款人名稱（必須與僱員證件同名）<br>Bank Account Holder Name (Must be same name as displayed in the employee's identity document)</label>
+          <div class="question-tip">Tip: 請填寫英文 【Please fill in English】 <span class="required">*</span></div>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">30. 【香港】銀行帳號<br>Bank Account No. (Prefer Multi-Currency a/c) <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">31. 【新加坡】銀行名稱<br>Bank Name</label>
+          <div class="question-tip">Tip: 請填寫英文 【Please fill in English】 <span class="required">*</span></div>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">32. 【新加坡】收款人名稱（必須與僱員證件同名）<br>Bank Account Holder Name (Must be same name as displayed in the employee's identity document)</label>
+          <div class="question-tip">Tip: 請填寫英文 【Please fill in English】 <span class="required">*</span></div>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">33. 【新加坡】銀行帳號<br>Bank Account No. (Prefer Multi-Currency a/c) <span class="required">*</span></label>
+          <input type="text" class="text-input" placeholder="Enter your answer">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 9: Single Contract Upload -->
+    <div class="card dynamic-section" id="sec-single-upload">
+      <div class="section-tag"><span>Section 9</span><span>•••</span></div>
+      <div class="section-body">
+        <h2 class="section-title">上傳帳戶資訊</h2>
+        <p class="section-subtitle">Upload file account information<br>香港本地帳戶：檔案須包含 帳戶號碼 及 戶名。<br>非香港本地帳戶：檔案須包含 帳戶號碼、戶名 及 SWIFT Code。</p>
+
+        <div class="question-item">
+          <label class="question-label">34. 請上傳 存摺封面照片 或 網銀帳戶資訊截圖<br>Please upload a passbook cover photo or a screenshot of your online banking account information <span class="required">*</span></label>
+          <div class="file-upload-box">
+            <button type="button" class="upload-btn" onclick="document.getElementById('file-34').click()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
+              Upload file
+            </button>
+            <input type="file" id="file-34" accept="image/*" style="display:none">
+            <p class="file-limit-text">File number limit: 1 &nbsp; Single file size limit: 10MB &nbsp; Allowed file types: Image</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 10: Double Contract Upload -->
+    <div class="card dynamic-section" id="sec-double-upload">
+      <div class="section-tag"><span>Section 10</span><span>•••</span></div>
+      <div class="section-body">
+        <h2 class="section-title">上傳帳戶資訊 - 雙合約</h2>
+        <p class="section-subtitle">Upload file account information - double contract<br>香港本地帳戶：檔案須包含 帳戶號碼 及 戶名。<br>非香港本地帳戶：檔案須包含 帳戶號碼、戶名 及 SWIFT Code。</p>
+
+        <div class="question-item">
+          <label class="question-label">35. 請上傳 存摺封面照片 或 網銀帳戶資訊截圖<br>Please upload a passbook cover photo or a screenshot of your online banking account information <span class="required">*</span></label>
+          <div class="file-upload-box">
+            <button type="button" class="upload-btn" onclick="document.getElementById('file-35').click()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
+              Upload file
+            </button>
+            <input type="file" id="file-35" accept="image/*" style="display:none">
+            <p class="file-limit-text">File number limit: 1 &nbsp; Single file size limit: 10MB &nbsp; Allowed file types: Image</p>
+          </div>
+        </div>
+
+        <div class="question-item">
+          <label class="question-label">36. 請上傳 存摺封面照片 或 網銀帳戶資訊截圖<br>Please upload a passbook cover photo or a screenshot of your online banking account information <span class="required">*</span></label>
+          <div class="file-upload-box">
+            <button type="button" class="upload-btn" onclick="document.getElementById('file-36').click()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
+              Upload file
+            </button>
+            <input type="file" id="file-36" accept="image/*" style="display:none">
+            <p class="file-limit-text">File number limit: 1 &nbsp; Single file size limit: 10MB &nbsp; Allowed file types: Image</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-btn-area">
+      <button type="submit" class="submit-btn">Submit</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  function handleBranch(value) {
+    // 隱藏所有動態區塊
+    document.querySelectorAll('.dynamic-section').forEach(el => el.style.display = 'none');
+
+    // 依單合約/雙合約顯示相應輸入區與上傳區塊
+    switch (value) {
+      case 'hk':
+        document.getElementById('sec-hk').style.display = 'block';
+        document.getElementById('sec-single-upload').style.display = 'block';
+        break;
+      case 'tw':
+        document.getElementById('sec-tw').style.display = 'block';
+        document.getElementById('sec-single-upload').style.display = 'block';
+        break;
+      case 'sg':
+        document.getElementById('sec-sg').style.display = 'block';
+        document.getElementById('sec-single-upload').style.display = 'block';
+        break;
+      case 'hk_tw':
+        document.getElementById('sec-hk-tw').style.display = 'block';
+        document.getElementById('sec-double-upload').style.display = 'block';
+        break;
+      case 'tw_fx_local':
+        document.getElementById('sec-tw-fx').style.display = 'block';
+        document.getElementById('sec-double-upload').style.display = 'block';
+        break;
+      case 'hk_sg':
+        document.getElementById('sec-hk-sg').style.display = 'block';
+        document.getElementById('sec-double-upload').style.display = 'block';
+        break;
+    }
+  }
+
+  document.getElementById('payrollForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('表單已成功送出！');
+  });
+</script>
+
+</body>
+</html>
