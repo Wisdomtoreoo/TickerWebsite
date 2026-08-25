@@ -1,0 +1,2779 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投資級債券行情清單 (IG Bond Lists) - 2026/08/25</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --primary-dark: #0f172a;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding: 24px 20px;
+            font-size: 13px;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: #ffffff;
+            padding: 24px 30px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title p {
+            color: #94a3b8;
+            font-size: 13.5px;
+            margin-top: 6px;
+        }
+
+        .date-badge {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            padding: 7px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: inline-block;
+        }
+
+        /* Navigation Tabs */
+        .tabs-nav {
+            display: flex;
+            gap: 8px;
+            background: #ffffff;
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 11px 18px;
+            border: none;
+            background: transparent;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .tab-btn:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.22);
+        }
+
+        /* Summary cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .summary-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .summary-card .title {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .summary-card .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .summary-card .desc {
+            font-size: 11.5px;
+            color: #94a3b8;
+        }
+
+        /* Toolbar & Controls */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 260px;
+            max-width: 420px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 9px 16px 9px 38px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            background: #ffffff;
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .hint-text {
+            font-size: 12.5px;
+            color: var(--text-muted);
+        }
+
+        /* Table Card */
+        .table-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            max-height: 700px;
+            position: relative;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            font-size: 11.5px;
+            padding: 11px 12px;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            white-space: nowrap;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        th:hover {
+            background: #f1f5f9;
+            color: var(--accent);
+        }
+
+        th.sort-asc::after {
+            content: " ▲";
+            font-size: 9px;
+            color: var(--accent);
+        }
+        th.sort-desc::after {
+            content: " ▼";
+            font-size: 9px;
+            color: var(--accent);
+        }
+
+        td {
+            padding: 9px 12px;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+            font-size: 12.5px;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Specific Cell Styles */
+        .issuer-name {
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .issuer2-name {
+            color: #64748b;
+            font-size: 11.5px;
+        }
+
+        .badge-ticker {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-weight: 600;
+            font-size: 11px;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+
+        .isin-code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 11.5px;
+            color: #475569;
+        }
+
+        .rating-badge {
+            font-size: 11px;
+            font-weight: 600;
+            background: #f1f5f9;
+            color: #334155;
+            padding: 2px 7px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .rank-badge {
+            font-size: 11px;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-weight: 500;
+            background: #f3f4f6;
+            color: #4b5563;
+            white-space: nowrap;
+        }
+
+        .rank-tlac {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .num {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            font-weight: 500;
+        }
+
+        .val-pos {
+            color: #16a34a;
+            font-weight: 600;
+        }
+        .val-neg {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 12px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-title">
+            <h1>🏛️ 投資級債券市場報價表 (Investment Grade Bond Market)</h1>
+            <p>包含中短期投資級債 (Short-term IG)、長天期投資級債 (Long-term IG) 及金融債券 (Financial Bonds)</p>
+        </div>
+        <div>
+            <span class="date-badge">📅 報價日期：2026/08/25</span>
+        </div>
+    </header>
+
+    <!-- Top Navigation Tabs -->
+    <div class="tabs-nav">
+        <button class="tab-btn active" onclick="switchTab('short-term', this)">🔹 Short-term IG bond list (44 檔)</button>
+        <button class="tab-btn" onclick="switchTab('long-term', this)">🔹 Long-term IG bond list (42 檔)</button>
+        <button class="tab-btn" onclick="switchTab('financial', this)">🔹 Financial bond list (41 檔)</button>
+    </div>
+
+    <!-- TAB 1: Short-term IG -->
+    <div id="short-term" class="tab-content active">
+        <div class="cards-grid">
+            <div class="summary-card">
+                <span class="title">債券檔數</span>
+                <span class="value">44 檔</span>
+                <span class="desc">中短期優質跨國企業</span>
+            </div>
+            <div class="summary-card">
+                <span class="title">平均票面利率 (Avg Coupon)</span>
+                <span class="value">4.51%</span>
+                <span class="desc">年化配息率</span>
+            </div>
+            <div class="summary-card">
+                <span class="title">平均到期殖利率 (Avg YTM)</span>
+                <span class="value">4.84%</span>
+                <span class="desc">平均到期收益</span>
+            </div>
+            <div class="summary-card">
+                <span class="title">平均報價 (Avg Offer)</span>
+                <span class="value">98.37</span>
+                <span class="desc">參考買價均值</span>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="search-short" placeholder="搜尋發行機構、Ticker、ISIN或評級..." onkeyup="filterTable('search-short', 'table-short')">
+            </div>
+            <div class="hint-text">💡 點擊欄位標題可進行<strong>升冪 / 降冪排序</strong></div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-container">
+                <table id="table-short">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('table-short', 0)">Issuer (中文)</th>
+                            <th onclick="sortTable('table-short', 1)">Issuer2 (英文)</th>
+                            <th onclick="sortTable('table-short', 2)">Ticker</th>
+                            <th onclick="sortTable('table-short', 3)">ISIN</th>
+                            <th onclick="sortTable('table-short', 4)">Mood's/S&P/Fitch</th>
+                            <th class="num" onclick="sortTable('table-short', 5, true)">Coupon (%)</th>
+                            <th onclick="sortTable('table-short', 6)">Call Date</th>
+                            <th onclick="sortTable('table-short', 7)">Maturity</th>
+                            <th class="num" onclick="sortTable('table-short', 8, true)">Offer (%)</th>
+                            <th class="num" onclick="sortTable('table-short', 9, true)">YTC (%)</th>
+                            <th class="num" onclick="sortTable('table-short', 10, true)">YTM (%)</th>
+                            <th onclick="sortTable('table-short', 11)">RANK</th>
+                            <th class="num" onclick="sortTable('table-short', 12, true)">5D %</th>
+                            <th class="num" onclick="sortTable('table-short', 13, true)">YTD(%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="issuer-name">TSMC Arizona(台積電)</td>
+                            <td class="issuer2-name">TSMC ARIZONA CORP</td>
+                            <td><span class="badge-ticker">TAISEM</span></td>
+                            <td class="isin-code">US872898AH40</td>
+                            <td><span class="rating-badge">Aa3 / AA- / -</span></td>
+                            <td class="num">4.250%</td>
+                            <td>2032/1/22</td>
+                            <td>2032/4/22</td>
+                            <td class="num">98.35</td>
+                            <td class="num">4.60%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.58%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.300%</td>
+                            <td class="num val-neg">-2.896%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">美國運通</td>
+                            <td class="issuer2-name">AMERICAN EXPRESS CO</td>
+                            <td><span class="badge-ticker">AXP</span></td>
+                            <td class="isin-code">US025816DU02</td>
+                            <td><span class="rating-badge">A2 / A- / A</span></td>
+                            <td class="num">5.532%</td>
+                            <td>2029/4/25</td>
+                            <td>2030/4/25</td>
+                            <td class="num">102.78</td>
+                            <td class="num">4.41%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.50%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.119%</td>
+                            <td class="num val-neg">-2.505%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">吉利德科學公司</td>
+                            <td class="issuer2-name">GILEAD SCIENCES INC</td>
+                            <td><span class="badge-ticker">GILD</span></td>
+                            <td class="isin-code">US375558BZ59</td>
+                            <td><span class="rating-badge">A2 / A- / -</span></td>
+                            <td class="num">5.250%</td>
+                            <td>2033/7/15</td>
+                            <td>2033/10/15</td>
+                            <td class="num">102.06</td>
+                            <td class="num">4.89%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.90%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.178%</td>
+                            <td class="num val-neg">-4.013%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">美光科技公司</td>
+                            <td class="issuer2-name">MICRON TECHNOLOGY INC</td>
+                            <td><span class="badge-ticker">MU</span></td>
+                            <td class="isin-code">US595112CB74</td>
+                            <td><span class="rating-badge">Baa1 / BBB+ / BBB+</span></td>
+                            <td class="num">5.875%</td>
+                            <td>2033/6/15</td>
+                            <td>2033/9/15</td>
+                            <td class="num">103.92</td>
+                            <td class="num">5.18%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.20%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.084%</td>
+                            <td class="num val-neg">-3.356%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">可口可樂公司</td>
+                            <td class="issuer2-name">COCA-COLA CO/THE</td>
+                            <td><span class="badge-ticker">KO</span></td>
+                            <td class="isin-code">US191216CT51</td>
+                            <td><span class="rating-badge">A1 / A+ / WD</span></td>
+                            <td class="num">3.450%</td>
+                            <td>-</td>
+                            <td>2030/3/25</td>
+                            <td class="num">97.53</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.20%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.065%</td>
+                            <td class="num val-neg">-1.695%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">華特迪士尼公司</td>
+                            <td class="issuer2-name">WALT DISNEY COMPANY/THE</td>
+                            <td><span class="badge-ticker">DIS</span></td>
+                            <td class="isin-code">US254687FX90</td>
+                            <td><span class="rating-badge">A2 / A / WD</span></td>
+                            <td class="num">2.650%</td>
+                            <td>-</td>
+                            <td>2031/1/13</td>
+                            <td class="num">92.86</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.46%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.080%</td>
+                            <td class="num val-neg">-1.918%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">法國電力股份有限公司</td>
+                            <td class="issuer2-name">ELECTRICITE DE FRANCE SA</td>
+                            <td><span class="badge-ticker">EDF</span></td>
+                            <td class="isin-code">USF29416AB40</td>
+                            <td><span class="rating-badge">Baa1 / BBB+ / BBB+</span></td>
+                            <td class="num">5.700%</td>
+                            <td>2028/4/23</td>
+                            <td>2028/5/23</td>
+                            <td class="num">102.72</td>
+                            <td class="num">3.99%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.06%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.024%</td>
+                            <td class="num val-neg">-1.687%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">智遊網集團公司</td>
+                            <td class="issuer2-name">EXPEDIA GROUP INC</td>
+                            <td><span class="badge-ticker">EXPE</span></td>
+                            <td class="isin-code">US30212PBH73</td>
+                            <td><span class="rating-badge">Baa2 / BBB / BBB</span></td>
+                            <td class="num">2.950%</td>
+                            <td>2030/12/15</td>
+                            <td>2031/3/15</td>
+                            <td class="num">92.35</td>
+                            <td class="num">4.95%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.84%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.023%</td>
+                            <td class="num val-neg">-1.872%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">3M</td>
+                            <td class="issuer2-name">3M COMPANY</td>
+                            <td><span class="badge-ticker">MMM</span></td>
+                            <td class="isin-code">US88579YBR18</td>
+                            <td><span class="rating-badge">A3 / BBB+ / A-</span></td>
+                            <td class="num">5.150%</td>
+                            <td>2034/12/15</td>
+                            <td>2035/3/15</td>
+                            <td class="num">100.02</td>
+                            <td class="num">5.15%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.15%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.175%</td>
+                            <td class="num val-neg">-3.377%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">高通公司</td>
+                            <td class="issuer2-name">QUALCOMM INC</td>
+                            <td><span class="badge-ticker">QCOM</span></td>
+                            <td class="isin-code">US747525BP77</td>
+                            <td><span class="rating-badge">A2 / A / -</span></td>
+                            <td class="num">1.650%</td>
+                            <td>2032/2/20</td>
+                            <td>2032/5/20</td>
+                            <td class="num">84.69</td>
+                            <td class="num">4.86%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.73%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.204%</td>
+                            <td class="num val-neg">-2.136%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">威森電信公司</td>
+                            <td class="issuer2-name">VERIZON COMMUNICATIONS</td>
+                            <td><span class="badge-ticker">VZ</span></td>
+                            <td class="isin-code">US92343VFE92</td>
+                            <td><span class="rating-badge">Baa1 / BBB+ / A-</span></td>
+                            <td class="num">3.150%</td>
+                            <td>2029/12/22</td>
+                            <td>2030/3/22</td>
+                            <td class="num">95.4</td>
+                            <td class="num">4.66%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.56%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.044%</td>
+                            <td class="num val-neg">-1.522%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">萬豪國際集團(馬里蘭)</td>
+                            <td class="issuer2-name">MARRIOTT INTERNATIONAL</td>
+                            <td><span class="badge-ticker">MAR</span></td>
+                            <td class="isin-code">US571903BQ56</td>
+                            <td><span class="rating-badge">Baa2 / BBB / -</span></td>
+                            <td class="num">5.300%</td>
+                            <td>2034/2/15</td>
+                            <td>2034/5/15</td>
+                            <td class="num">100.17</td>
+                            <td class="num">5.27%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.27%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.192%</td>
+                            <td class="num val-neg">-4.075%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">菲利浦莫里斯國際公司</td>
+                            <td class="issuer2-name">PHILIP MORRIS INTL INC</td>
+                            <td><span class="badge-ticker">PM</span></td>
+                            <td class="isin-code">US718172DJ54</td>
+                            <td><span class="rating-badge">A2 / A / -</span></td>
+                            <td class="num">5.250%</td>
+                            <td>2033/11/13</td>
+                            <td>2034/2/13</td>
+                            <td class="num">100.8</td>
+                            <td class="num">5.12%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.12%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.128%</td>
+                            <td class="num val-neg">-3.653%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">聯合健康集團公司</td>
+                            <td class="issuer2-name">UNITEDHEALTH GROUP INC</td>
+                            <td><span class="badge-ticker">UNH</span></td>
+                            <td class="isin-code">US91324PFA57</td>
+                            <td><span class="rating-badge">A2 / A+ / A</span></td>
+                            <td class="num">4.900%</td>
+                            <td>2031/2/15</td>
+                            <td>2031/4/15</td>
+                            <td class="num">101.06</td>
+                            <td class="num">4.64%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.64%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.177%</td>
+                            <td class="num val-neg">-2.684%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">西方中游營運有限合夥</td>
+                            <td class="issuer2-name">WESTERN MIDSTREAM OPERAT</td>
+                            <td><span class="badge-ticker">WES</span></td>
+                            <td class="isin-code">US958667AC17</td>
+                            <td><span class="rating-badge">Baa3 / BBB- / BBB-</span></td>
+                            <td class="num">4.050%</td>
+                            <td>2029/11/1</td>
+                            <td>2030/2/1</td>
+                            <td class="num">97.71</td>
+                            <td class="num">4.83%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.78%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.070%</td>
+                            <td class="num val-neg">-1.398%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">IBM International Capital Pt</td>
+                            <td class="issuer2-name">IBM INTERNAT CAPITAL</td>
+                            <td><span class="badge-ticker">IBM</span></td>
+                            <td class="isin-code">US449276AE42</td>
+                            <td><span class="rating-badge">A3 / A- / A-</span></td>
+                            <td class="num">4.900%</td>
+                            <td>2033/11/5</td>
+                            <td>2034/2/5</td>
+                            <td class="num">97.62</td>
+                            <td class="num">5.30%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.29%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.104%</td>
+                            <td class="num val-neg">-4.440%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">雅詩蘭黛</td>
+                            <td class="issuer2-name">ESTEE LAUDER CO INC</td>
+                            <td><span class="badge-ticker">EL</span></td>
+                            <td class="isin-code">US29736RAV24</td>
+                            <td><span class="rating-badge">A3 / A- / -</span></td>
+                            <td class="num">5.000%</td>
+                            <td>2033/11/14</td>
+                            <td>2034/2/14</td>
+                            <td class="num">99.29</td>
+                            <td class="num">5.12%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.12%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.096%</td>
+                            <td class="num val-neg">-3.376%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">Pfizer Investment Enterprise</td>
+                            <td class="issuer2-name">PFIZER INVESTMENT ENTER</td>
+                            <td><span class="badge-ticker">PFE</span></td>
+                            <td class="isin-code">US716973AE24</td>
+                            <td><span class="rating-badge">A1 / A / WD</span></td>
+                            <td class="num">4.750%</td>
+                            <td>2033/2/19</td>
+                            <td>2033/5/19</td>
+                            <td class="num">98.69</td>
+                            <td class="num">4.99%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.98%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.146%</td>
+                            <td class="num val-neg">-3.542%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">BP資本市場美國公司</td>
+                            <td class="issuer2-name">BP CAP MARKETS AMERICA</td>
+                            <td><span class="badge-ticker">BPLN</span></td>
+                            <td class="isin-code">US10373QBV14</td>
+                            <td><span class="rating-badge">A1 / A- / A+</span></td>
+                            <td class="num">4.893%</td>
+                            <td>2033/6/11</td>
+                            <td>2033/9/11</td>
+                            <td class="num">99.44</td>
+                            <td class="num">4.99%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.99%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.229%</td>
+                            <td class="num val-neg">-3.403%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">戴爾國際有限責任/EMC公</td>
+                            <td class="issuer2-name">DELL INT LLC / EMC CORP</td>
+                            <td><span class="badge-ticker">DELL</span></td>
+                            <td class="isin-code">US24703DBX84</td>
+                            <td><span class="rating-badge">Baa2 / BBB+ / -</span></td>
+                            <td class="num">5.250%</td>
+                            <td>2036/11/15</td>
+                            <td>2037/2/15</td>
+                            <td class="num">97.39</td>
+                            <td class="num">5.59%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.58%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.029%</td>
+                            <td class="num ">-</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">嘉能可融資有限責任公司</td>
+                            <td class="issuer2-name">GLENCORE FUNDING LLC</td>
+                            <td><span class="badge-ticker">GLENLN</span></td>
+                            <td class="isin-code">USU37818BZ05</td>
+                            <td><span class="rating-badge">A3 / BBB+ / -</span></td>
+                            <td class="num">5.200%</td>
+                            <td>2033/5/1</td>
+                            <td>2033/7/1</td>
+                            <td class="num">99.68</td>
+                            <td class="num">5.26%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.26%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.012%</td>
+                            <td class="num ">-</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">雀巢控股公司</td>
+                            <td class="issuer2-name">NESTLE HOLDINGS INC</td>
+                            <td><span class="badge-ticker">NESNVX</span></td>
+                            <td class="isin-code">USU74078CU56</td>
+                            <td><span class="rating-badge">Aa3 / AA- / -</span></td>
+                            <td class="num">4.300%</td>
+                            <td>2032/7/1</td>
+                            <td>2032/10/1</td>
+                            <td class="num">98.04</td>
+                            <td class="num">4.69%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.67%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.340%</td>
+                            <td class="num val-neg">-3.107%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">新加坡科技工程</td>
+                            <td class="issuer2-name">ST ENG URBAN SOL USA</td>
+                            <td><span class="badge-ticker">STESP</span></td>
+                            <td class="isin-code">US8585EAB84</td>
+                            <td><span class="rating-badge">Aaa / - / -</span></td>
+                            <td class="num">3.750%</td>
+                            <td>2031/11/5</td>
+                            <td>2032/5/5</td>
+                            <td class="num">95.83</td>
+                            <td class="num">4.66%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.59%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.249%</td>
+                            <td class="num val-neg">-2.366%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">達登餐廳公司</td>
+                            <td class="issuer2-name">DARDEN RESTAURANTS INC</td>
+                            <td><span class="badge-ticker">DRI</span></td>
+                            <td class="isin-code">US237194AN56</td>
+                            <td><span class="rating-badge">Baa2 / BBB / BBB</span></td>
+                            <td class="num">6.300%</td>
+                            <td>2033/7/10</td>
+                            <td>2033/10/10</td>
+                            <td class="num">106.17</td>
+                            <td class="num">5.22%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.25%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.296%</td>
+                            <td class="num val-neg">-3.395%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">新加坡航空公司有限公司</td>
+                            <td class="issuer2-name">SINGAPORE AIRLINES LTD</td>
+                            <td><span class="badge-ticker">SIASP</span></td>
+                            <td class="isin-code">XS2787854673</td>
+                            <td><span class="rating-badge">- / - / -</span></td>
+                            <td class="num">5.250%</td>
+                            <td>2034/1/21</td>
+                            <td>2034/3/21</td>
+                            <td class="num">101.1</td>
+                            <td class="num">5.07%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.07%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.026%</td>
+                            <td class="num val-neg">-4.554%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">大都會人壽</td>
+                            <td class="issuer2-name">METLIFE INC</td>
+                            <td><span class="badge-ticker">MET</span></td>
+                            <td class="isin-code">US59156RCE62</td>
+                            <td><span class="rating-badge">A3 / A- / A-</span></td>
+                            <td class="num">5.375%</td>
+                            <td>2033/4/15</td>
+                            <td>2033/7/15</td>
+                            <td class="num">102.52</td>
+                            <td class="num">4.93%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.94%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.070%</td>
+                            <td class="num val-neg">-3.877%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">中化資本離岸有限公司</td>
+                            <td class="issuer2-name">SINOCHEM OFFSHORE CAPITA</td>
+                            <td><span class="badge-ticker">SINOCH</span></td>
+                            <td class="isin-code">XS2387368975</td>
+                            <td><span class="rating-badge">- / BBB+ / A-</span></td>
+                            <td class="num">2.375%</td>
+                            <td>2031/6/23</td>
+                            <td>2031/9/23</td>
+                            <td class="num">89.56</td>
+                            <td class="num">4.83%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.71%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.178%</td>
+                            <td class="num val-neg">-1.351%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">阿里巴巴集團控股有限公司</td>
+                            <td class="issuer2-name">ALIBABA GROUP HOLDING</td>
+                            <td><span class="badge-ticker">BABA</span></td>
+                            <td class="isin-code">US01609WAR34</td>
+                            <td><span class="rating-badge">A1 / A+ / A</span></td>
+                            <td class="num">4.500%</td>
+                            <td>2034/5/28</td>
+                            <td>2034/11/28</td>
+                            <td class="num">96.51</td>
+                            <td class="num">5.05%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.02%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.022%</td>
+                            <td class="num val-neg">-3.435%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">中銀租賃</td>
+                            <td class="issuer2-name">BOC AVIATION USA CORP</td>
+                            <td><span class="badge-ticker">BOCAVI</span></td>
+                            <td class="isin-code">US66980Q2C05</td>
+                            <td><span class="rating-badge">- / A- / A-</span></td>
+                            <td class="num">4.875%</td>
+                            <td>2033/2/3</td>
+                            <td>2033/5/3</td>
+                            <td class="num">100.81</td>
+                            <td class="num">4.73%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.73%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.110%</td>
+                            <td class="num val-neg">-2.282%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">長江和記計公司</td>
+                            <td class="issuer2-name">CK HUTCHISON INTL 24</td>
+                            <td><span class="badge-ticker">CKHH</span></td>
+                            <td class="isin-code">USG2176UAB64</td>
+                            <td><span class="rating-badge">A2 / A / A</span></td>
+                            <td class="num">5.500%</td>
+                            <td>2034/1/26</td>
+                            <td>2034/4/26</td>
+                            <td class="num">102.96</td>
+                            <td class="num">5.02%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.03%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.067%</td>
+                            <td class="num val-neg">-2.648%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">領展房地產投資信託公司</td>
+                            <td class="issuer2-name">LINK FINANCE CAYMAN 2009</td>
+                            <td><span class="badge-ticker">LINREI</span></td>
+                            <td class="isin-code">XS2417084030</td>
+                            <td><span class="rating-badge">A2 / A / -</span></td>
+                            <td class="num">2.750%</td>
+                            <td>-</td>
+                            <td>2032/1/19</td>
+                            <td class="num">91.24</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.60%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.103%</td>
+                            <td class="num val-neg">-1.122%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">太古股份</td>
+                            <td class="issuer2-name">SWIRE PACIFIC MTN FIN</td>
+                            <td><span class="badge-ticker">SWIRE</span></td>
+                            <td class="isin-code">XS2043949200</td>
+                            <td><span class="rating-badge">A3 / A- / -</span></td>
+                            <td class="num">2.875%</td>
+                            <td>2029/10/30</td>
+                            <td>2030/1/30</td>
+                            <td class="num">95.62</td>
+                            <td class="num">4.37%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.26%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.054%</td>
+                            <td class="num val-neg">-1.242%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">歐力士公司</td>
+                            <td class="issuer2-name">ORIX CORP</td>
+                            <td><span class="badge-ticker">ORIX</span></td>
+                            <td class="isin-code">US686329AB98</td>
+                            <td><span class="rating-badge">A3 / BBB+ / A-</span></td>
+                            <td class="num">5.400%</td>
+                            <td>-</td>
+                            <td>2035/2/25</td>
+                            <td class="num">100.42</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.34%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.008%</td>
+                            <td class="num val-neg">-3.812%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">松下控股公司</td>
+                            <td class="issuer2-name">PANASONIC HOLDINGS CORP</td>
+                            <td><span class="badge-ticker">MATSEL</span></td>
+                            <td class="isin-code">USJ6355LAD31</td>
+                            <td><span class="rating-badge">A3 / A- / -</span></td>
+                            <td class="num">5.302%</td>
+                            <td>2034/4/16</td>
+                            <td>2034/7/16</td>
+                            <td class="num">100.64</td>
+                            <td class="num">5.20%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.20%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.024%</td>
+                            <td class="num val-neg">-3.698%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">Mitsubishi HC Finance Amerik</td>
+                            <td class="issuer2-name">MITSUBISHI HC FIN AMER</td>
+                            <td><span class="badge-ticker">MITHCC</span></td>
+                            <td class="isin-code">USU6568YAK42</td>
+                            <td><span class="rating-badge">A3 / A / -</span></td>
+                            <td class="num">5.197%</td>
+                            <td>2031/6/21</td>
+                            <td>2031/7/21</td>
+                            <td class="num">100.7</td>
+                            <td class="num">5.03%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.03%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.168%</td>
+                            <td class="num ">-</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">三菱商事股份有限公司</td>
+                            <td class="issuer2-name">MITSUBISHI CORP</td>
+                            <td><span class="badge-ticker">MITCO</span></td>
+                            <td class="isin-code">USJ43830FW33</td>
+                            <td><span class="rating-badge">A2 / A / -</span></td>
+                            <td class="num">4.625%</td>
+                            <td>2031/5/23</td>
+                            <td>2031/6/23</td>
+                            <td class="num">99.85</td>
+                            <td class="num">4.66%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.66%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.234%</td>
+                            <td class="num ">-</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">梅賽德斯-賓士金融北美有限責任</td>
+                            <td class="issuer2-name">MERCEDES-BENZ FIN NA</td>
+                            <td><span class="badge-ticker">MBGGR</span></td>
+                            <td class="isin-code">US5876JAM72</td>
+                            <td><span class="rating-badge">A2 / A / WD</span></td>
+                            <td class="num">5.050%</td>
+                            <td>-</td>
+                            <td>2033/8/3</td>
+                            <td class="num">98.95</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.23%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.110%</td>
+                            <td class="num val-neg">-4.292%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">通用汽車金融公司</td>
+                            <td class="issuer2-name">GENERAL MOTORS FINL CO</td>
+                            <td><span class="badge-ticker">GM</span></td>
+                            <td class="isin-code">US37045XEB82</td>
+                            <td><span class="rating-badge">Baa2 / BBB / BBB</span></td>
+                            <td class="num">6.000%</td>
+                            <td>2027/12/9</td>
+                            <td>2028/1/9</td>
+                            <td class="num">102.64</td>
+                            <td class="num">3.88%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.00%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.129%</td>
+                            <td class="num val-neg">-1.718%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">韓國電力</td>
+                            <td class="issuer2-name">KOREA ELECTRIC POWER</td>
+                            <td><span class="badge-ticker">KORELE</span></td>
+                            <td class="isin-code">USY48406BA27</td>
+                            <td><span class="rating-badge">Aa2 / AA / AA-</span></td>
+                            <td class="num">5.125%</td>
+                            <td>-</td>
+                            <td>2029/4/23</td>
+                            <td class="num">101.6</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.87%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.019%</td>
+                            <td class="num val-neg">-3.163%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">LG化學有限公司</td>
+                            <td class="issuer2-name">LG CHEM LTD</td>
+                            <td><span class="badge-ticker">LGCHM</span></td>
+                            <td class="isin-code">USY52758AD47</td>
+                            <td><span class="rating-badge">Baa2 / BBB+ / -</span></td>
+                            <td class="num">3.625%</td>
+                            <td>-</td>
+                            <td>2029/4/15</td>
+                            <td class="num">97.36</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.70%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.151%</td>
+                            <td class="num val-neg">-1.379%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">恩愛爾海力士公司</td>
+                            <td class="issuer2-name">SK HYNIX INC</td>
+                            <td><span class="badge-ticker">HYUELE</span></td>
+                            <td class="isin-code">USY8085FBD16</td>
+                            <td><span class="rating-badge">A3 / A / BBB+</span></td>
+                            <td class="num">2.375%</td>
+                            <td>-</td>
+                            <td>2031/1/19</td>
+                            <td class="num">90.72</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.74%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.273%</td>
+                            <td class="num val-neg">-1.264%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">信實工業有限公司</td>
+                            <td class="issuer2-name">RELIANCE INDUSTRIES LTD</td>
+                            <td><span class="badge-ticker">RILIN</span></td>
+                            <td class="isin-code">USY72570AS69</td>
+                            <td><span class="rating-badge">Baa1 / A- / -</span></td>
+                            <td class="num">2.875%</td>
+                            <td>-</td>
+                            <td>2032/1/12</td>
+                            <td class="num">90.41</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.92%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.111%</td>
+                            <td class="num val-neg">-2.118%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">印度石油天然氣有限公司</td>
+                            <td class="issuer2-name">OIL & NATURAL GAS CORP L</td>
+                            <td><span class="badge-ticker">ONGCIN</span></td>
+                            <td class="isin-code">XS2087717364</td>
+                            <td><span class="rating-badge">Baa3 / BBB- / BBB-</span></td>
+                            <td class="num">3.375%</td>
+                            <td>-</td>
+                            <td>2029/12/5</td>
+                            <td class="num">96.17</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.65%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.167%</td>
+                            <td class="num val-neg">-1.063%</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">印尼Asahan 鋁業</td>
+                            <td class="issuer2-name">INDO ASAHAN/MINERAL IND</td>
+                            <td><span class="badge-ticker">IDASAL</span></td>
+                            <td class="isin-code">USY7140WAC20</td>
+                            <td><span class="rating-badge">Baa2 / - / BBB</span></td>
+                            <td class="num">6.530%</td>
+                            <td>-</td>
+                            <td>2028/11/15</td>
+                            <td class="num">104.03</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.60%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.099%</td>
+                            <td class="num val-neg">-2.816%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Long-term IG -->
+    <div id="long-term" class="tab-content">
+        <div class="cards-grid">
+            <div class="summary-card">
+                <span class="title">債券檔數</span>
+                <span class="value">42 檔</span>
+                <span class="desc">長天期優質龍頭企業</span>
+            </div>
+            <div class="summary-card">
+                <span class="title">平均票面利率 (Avg Coupon)</span>
+                <span class="value">3.93%</span>
+                <span class="desc">長天期票息水準</span>
+            </div>
+            <div class="summary-card">
+                <span class="title">平均到期殖利率 (Avg YTM)</span>
+                <span class="value">6.00%</span>
+                <span class="desc">長線鎖利首選</span>
+            </div>
+            <div class="summary-card">
+                <span class="title">平均存續期間 (Avg Duration)</span>
+                <span class="value">13.91 年</span>
+                <span class="desc">平均存續期</span>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="search-long" placeholder="搜尋發行機構、Ticker、ISIN或評級..." onkeyup="filterTable('search-long', 'table-long')">
+            </div>
+            <div class="hint-text">💡 點擊欄位標題可進行<strong>升冪 / 降冪排序</strong></div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-container">
+                <table id="table-long">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('table-long', 0)">Issuer (中文)</th>
+                            <th onclick="sortTable('table-long', 1)">Issuer2 (英文)</th>
+                            <th onclick="sortTable('table-long', 2)">Ticker</th>
+                            <th onclick="sortTable('table-long', 3)">ISIN</th>
+                            <th onclick="sortTable('table-long', 4)">Mood's/S&P/Fitch</th>
+                            <th class="num" onclick="sortTable('table-long', 5, true)">Coupon (%)</th>
+                            <th onclick="sortTable('table-long', 6)">Maturity</th>
+                            <th onclick="sortTable('table-long', 7)">Call date</th>
+                            <th class="num" onclick="sortTable('table-long', 8, true)">Offer (%)</th>
+                            <th class="num" onclick="sortTable('table-long', 9, true)">YTC (%)</th>
+                            <th class="num" onclick="sortTable('table-long', 10, true)">YTM (%)</th>
+                            <th onclick="sortTable('table-long', 11)">RANK</th>
+                            <th class="num" onclick="sortTable('table-long', 12, true)">5D %</th>
+                            <th class="num" onclick="sortTable('table-long', 13, true)">YTD(%)</th>
+                            <th class="num" onclick="sortTable('table-long', 14, true)">Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="issuer-name">TSMC Arizona(台積電)</td>
+                            <td class="issuer2-name">TSMC ARIZONA CORP</td>
+                            <td><span class="badge-ticker">TAISEM</span></td>
+                            <td class="isin-code">US872898AD36</td>
+                            <td><span class="rating-badge">Aa3 / AA- / -</span></td>
+                            <td class="num">3.125%</td>
+                            <td>2041/10/25</td>
+                            <td>2041/4/25</td>
+                            <td class="num">79.02</td>
+                            <td class="num">5.19%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.13%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.077%</td>
+                            <td class="num val-neg">-3.522%</td>
+                            <td class="num" style="font-weight:600;">11.56</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">亞馬遜公司</td>
+                            <td class="issuer2-name">AMAZON.COM INC</td>
+                            <td><span class="badge-ticker">AMZN</span></td>
+                            <td class="isin-code">US023135BJ40</td>
+                            <td><span class="rating-badge">A1 / AA / AA-</span></td>
+                            <td class="num">4.050%</td>
+                            <td>2047/8/22</td>
+                            <td>2047/2/22</td>
+                            <td class="num">75.75</td>
+                            <td class="num">6.15%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.12%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.057%</td>
+                            <td class="num val-neg">-9.306%</td>
+                            <td class="num" style="font-weight:600;">13.14</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">蘋果公司</td>
+                            <td class="issuer2-name">APPLE INC</td>
+                            <td><span class="badge-ticker">AAPL</span></td>
+                            <td class="isin-code">US037833EA41</td>
+                            <td><span class="rating-badge">Aaa / AAA / -</span></td>
+                            <td class="num">2.550%</td>
+                            <td>2060/8/20</td>
+                            <td>2060/2/20</td>
+                            <td class="num">51.69</td>
+                            <td class="num">5.86%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.83%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.163%</td>
+                            <td class="num val-neg">-9.480%</td>
+                            <td class="num" style="font-weight:600;">17.85</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">華特迪士尼公司</td>
+                            <td class="issuer2-name">WALT DISNEY COMPANY/THE</td>
+                            <td><span class="badge-ticker">DIS</span></td>
+                            <td class="isin-code">US254687FZ49</td>
+                            <td><span class="rating-badge">A2 / A / WD</span></td>
+                            <td class="num">3.600%</td>
+                            <td>2051/1/13</td>
+                            <td>2050/7/13</td>
+                            <td class="num">70.73</td>
+                            <td class="num">5.90%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.87%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.226%</td>
+                            <td class="num val-neg">-6.525%</td>
+                            <td class="num" style="font-weight:600;">14.57</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">Alphabet公司</td>
+                            <td class="issuer2-name">ALPHABET INC</td>
+                            <td><span class="badge-ticker">GOOGL</span></td>
+                            <td class="isin-code">US02079KAG22</td>
+                            <td><span class="rating-badge">Aa2 / AA+ / -</span></td>
+                            <td class="num">2.250%</td>
+                            <td>2060/8/15</td>
+                            <td>2060/2/15</td>
+                            <td class="num">46.83</td>
+                            <td class="num">5.92%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.89%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.993%</td>
+                            <td class="num val-neg">-10.903%</td>
+                            <td class="num" style="font-weight:600;">18.3</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">微軟公司</td>
+                            <td class="issuer2-name">MICROSOFT CORP</td>
+                            <td><span class="badge-ticker">MSFT</span></td>
+                            <td class="isin-code">US594918CE21</td>
+                            <td><span class="rating-badge">Aaa / AAA / WD</span></td>
+                            <td class="num">2.921%</td>
+                            <td>2052/3/17</td>
+                            <td>2051/9/17</td>
+                            <td class="num">61.04</td>
+                            <td class="num">5.92%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.89%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.324%</td>
+                            <td class="num val-neg">-8.905%</td>
+                            <td class="num" style="font-weight:600;">15.35</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">波克夏海瑟威金融公司</td>
+                            <td class="issuer2-name">BERKSHIRE HATHAWAY FIN</td>
+                            <td><span class="badge-ticker">BRK</span></td>
+                            <td class="isin-code">US084664CR08</td>
+                            <td><span class="rating-badge">Aa2 / AA / A+u</span></td>
+                            <td class="num">4.250%</td>
+                            <td>2049/1/15</td>
+                            <td>2048/7/15</td>
+                            <td class="num">79.36</td>
+                            <td class="num">5.95%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.93%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.233%</td>
+                            <td class="num val-neg">-6.991%</td>
+                            <td class="num" style="font-weight:600;">13.47</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">甲骨文公司</td>
+                            <td class="issuer2-name">ORACLE CORP</td>
+                            <td><span class="badge-ticker">ORCL</span></td>
+                            <td class="isin-code">US68389XCA19</td>
+                            <td><span class="rating-badge">Baa2 / BBB- / BBB</span></td>
+                            <td class="num">3.950%</td>
+                            <td>2051/3/25</td>
+                            <td>2050/9/25</td>
+                            <td class="num">61.02</td>
+                            <td class="num">7.46%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">7.42%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.592%</td>
+                            <td class="num val-neg">-9.136%</td>
+                            <td class="num" style="font-weight:600;">12.84</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">應用材料</td>
+                            <td class="issuer2-name">APPLIED MATERIALS INC</td>
+                            <td><span class="badge-ticker">AMAT</span></td>
+                            <td class="isin-code">US038222AP03</td>
+                            <td><span class="rating-badge">A2 / A / -</span></td>
+                            <td class="num">2.750%</td>
+                            <td>2050/6/1</td>
+                            <td>2049/12/1</td>
+                            <td class="num">61.14</td>
+                            <td class="num">5.82%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.78%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.152%</td>
+                            <td class="num val-neg">-6.587%</td>
+                            <td class="num" style="font-weight:600;">15.3</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">德州儀器公司</td>
+                            <td class="issuer2-name">TEXAS INSTRUMENTS INC</td>
+                            <td><span class="badge-ticker">TXN</span></td>
+                            <td class="isin-code">US882508BQ64</td>
+                            <td><span class="rating-badge">Aa3 / A+ / -</span></td>
+                            <td class="num">4.100%</td>
+                            <td>2052/8/16</td>
+                            <td>2052/2/16</td>
+                            <td class="num">75.97</td>
+                            <td class="num">5.94%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.92%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.746%</td>
+                            <td class="num val-neg">-6.137%</td>
+                            <td class="num" style="font-weight:600;">14.56</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">達登餐廳公司</td>
+                            <td class="issuer2-name">DARDEN RESTAURANTS INC</td>
+                            <td><span class="badge-ticker">DRI</span></td>
+                            <td class="isin-code">US237194AM73</td>
+                            <td><span class="rating-badge">Baa2 / BBB / BBB</span></td>
+                            <td class="num">4.550%</td>
+                            <td>2048/2/15</td>
+                            <td>2047/8/15</td>
+                            <td class="num">80.52</td>
+                            <td class="num">6.23%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.20%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.196%</td>
+                            <td class="num val-neg">-3.230%</td>
+                            <td class="num" style="font-weight:600;">12.89</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">可口可樂公司</td>
+                            <td class="issuer2-name">COCA-COLA CO/THE</td>
+                            <td><span class="badge-ticker">KO</span></td>
+                            <td class="isin-code">US191216DL17</td>
+                            <td><span class="rating-badge">A1 / A+ / WD</span></td>
+                            <td class="num">3.000%</td>
+                            <td>2051/3/5</td>
+                            <td>-</td>
+                            <td class="num">64.01</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.76%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.240%</td>
+                            <td class="num val-neg">-5.943%</td>
+                            <td class="num" style="font-weight:600;">15.07</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">星巴克</td>
+                            <td class="issuer2-name">STARBUCKS CORP</td>
+                            <td><span class="badge-ticker">SBUX</span></td>
+                            <td class="isin-code">US855244BA67</td>
+                            <td><span class="rating-badge">Baa1 / BBB+ / WD</span></td>
+                            <td class="num">3.500%</td>
+                            <td>2050/11/15</td>
+                            <td>2050/5/15</td>
+                            <td class="num">67.98</td>
+                            <td class="num">6.06%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.03%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.490%</td>
+                            <td class="num val-neg">-4.786%</td>
+                            <td class="num" style="font-weight:600;">14.38</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">耐吉公司</td>
+                            <td class="issuer2-name">NIKE INC</td>
+                            <td><span class="badge-ticker">NKE</span></td>
+                            <td class="isin-code">US654106AM50</td>
+                            <td><span class="rating-badge">A1 / AA- / -</span></td>
+                            <td class="num">3.375%</td>
+                            <td>2050/3/27</td>
+                            <td>2049/9/27</td>
+                            <td class="num">68.16</td>
+                            <td class="num">5.92%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.89%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.189%</td>
+                            <td class="num val-neg">-6.543%</td>
+                            <td class="num" style="font-weight:600;">14.34</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">波音公司</td>
+                            <td class="issuer2-name">BOEING CO</td>
+                            <td><span class="badge-ticker">BA</span></td>
+                            <td class="isin-code">US097023CW33</td>
+                            <td><span class="rating-badge">Baa3 / BBB- / BBB-</span></td>
+                            <td class="num">5.805%</td>
+                            <td>2050/5/1</td>
+                            <td>2049/11/1</td>
+                            <td class="num">95.23</td>
+                            <td class="num">6.19%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.19%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.735%</td>
+                            <td class="num val-neg">-4.555%</td>
+                            <td class="num" style="font-weight:600;">12.59</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">Meta平台公司</td>
+                            <td class="issuer2-name">META PLATFORMS INC</td>
+                            <td><span class="badge-ticker">META</span></td>
+                            <td class="isin-code">US30303M8J41</td>
+                            <td><span class="rating-badge">A1 / AA- / -</span></td>
+                            <td class="num">4.450%</td>
+                            <td>2052/8/15</td>
+                            <td>2052/2/15</td>
+                            <td class="num">71.87</td>
+                            <td class="num">6.79%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.76%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.322%</td>
+                            <td class="num val-neg">-13.272%</td>
+                            <td class="num" style="font-weight:600;">13.58</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">威士卡</td>
+                            <td class="issuer2-name">VISA INC</td>
+                            <td><span class="badge-ticker">V</span></td>
+                            <td class="isin-code">US92826CAQ50</td>
+                            <td><span class="rating-badge">Aa3 / AA- / -</span></td>
+                            <td class="num">2.000%</td>
+                            <td>2050/8/15</td>
+                            <td>2050/2/15</td>
+                            <td class="num">52.36</td>
+                            <td class="num">5.71%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.65%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.412%</td>
+                            <td class="num val-neg">-5.605%</td>
+                            <td class="num" style="font-weight:600;">16.73</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">萬事達卡</td>
+                            <td class="issuer2-name">MASTERCARD INC</td>
+                            <td><span class="badge-ticker">MA</span></td>
+                            <td class="isin-code">US57636QAQ73</td>
+                            <td><span class="rating-badge">Aa3 / A / -</span></td>
+                            <td class="num">3.850%</td>
+                            <td>2050/3/26</td>
+                            <td>2049/9/26</td>
+                            <td class="num">75.27</td>
+                            <td class="num">5.81%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.78%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.303%</td>
+                            <td class="num val-neg">-5.600%</td>
+                            <td class="num" style="font-weight:600;">13.99</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">賽門房地產集團有限合夥</td>
+                            <td class="issuer2-name">SIMON PROPERTY GROUP LP</td>
+                            <td><span class="badge-ticker">SPG</span></td>
+                            <td class="isin-code">US828807DJ39</td>
+                            <td><span class="rating-badge">A3 / A / WD</span></td>
+                            <td class="num">3.800%</td>
+                            <td>2050/7/15</td>
+                            <td>2050/1/15</td>
+                            <td class="num">72.94</td>
+                            <td class="num">5.96%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.93%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.286%</td>
+                            <td class="num val-neg">-4.661%</td>
+                            <td class="num" style="font-weight:600;">14.22</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">美光科技公司</td>
+                            <td class="issuer2-name">MICRON TECHNOLOGY INC</td>
+                            <td><span class="badge-ticker">MU</span></td>
+                            <td class="isin-code">US595112BU64</td>
+                            <td><span class="rating-badge">Baa1 / BBB+ / BBB+</span></td>
+                            <td class="num">3.477%</td>
+                            <td>2051/11/1</td>
+                            <td>2051/5/1</td>
+                            <td class="num">67.88</td>
+                            <td class="num">5.98%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.95%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.413%</td>
+                            <td class="num val-neg">-5.118%</td>
+                            <td class="num" style="font-weight:600;">14.67</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">超微半導體公司</td>
+                            <td class="issuer2-name">ADVANCED MICRO DEVICES</td>
+                            <td><span class="badge-ticker">AMD</span></td>
+                            <td class="isin-code">US007903BG12</td>
+                            <td><span class="rating-badge">A1 / A / -</span></td>
+                            <td class="num">4.393%</td>
+                            <td>2052/6/1</td>
+                            <td>2051/12/1</td>
+                            <td class="num">78.19</td>
+                            <td class="num">6.10%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.08%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.265%</td>
+                            <td class="num val-neg">-9.060%</td>
+                            <td class="num" style="font-weight:600;">14.0</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">輝達公司</td>
+                            <td class="issuer2-name">NVIDIA CORP</td>
+                            <td><span class="badge-ticker">NVDA</span></td>
+                            <td class="isin-code">US67066GAH74</td>
+                            <td><span class="rating-badge">Aa1 / AA / WD</span></td>
+                            <td class="num">3.500%</td>
+                            <td>2050/4/1</td>
+                            <td>2049/10/1</td>
+                            <td class="num">67.95</td>
+                            <td class="num">6.11%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.07%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.053%</td>
+                            <td class="num val-neg">-10.004%</td>
+                            <td class="num" style="font-weight:600;">14.09</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">高通公司</td>
+                            <td class="issuer2-name">QUALCOMM INC</td>
+                            <td><span class="badge-ticker">QCOM</span></td>
+                            <td class="isin-code">US747525BR34</td>
+                            <td><span class="rating-badge">A2 / A / -</span></td>
+                            <td class="num">4.500%</td>
+                            <td>2052/5/20</td>
+                            <td>2051/11/20</td>
+                            <td class="num">79.17</td>
+                            <td class="num">6.13%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.12%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.023%</td>
+                            <td class="num val-neg">-8.017%</td>
+                            <td class="num" style="font-weight:600;">13.87</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">英特爾</td>
+                            <td class="issuer2-name">INTEL CORP</td>
+                            <td><span class="badge-ticker">INTC</span></td>
+                            <td class="isin-code">US458140CB48</td>
+                            <td><span class="rating-badge">Baa2 / BBB / BBB</span></td>
+                            <td class="num">4.900%</td>
+                            <td>2052/8/5</td>
+                            <td>2052/2/5</td>
+                            <td class="num">80.22</td>
+                            <td class="num">6.50%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.48%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.263%</td>
+                            <td class="num val-neg">-4.592%</td>
+                            <td class="num" style="font-weight:600;">13.51</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">自由港麥克莫蘭銅金公司</td>
+                            <td class="issuer2-name">FREEPORT-MCMORAN INC</td>
+                            <td><span class="badge-ticker">FCX</span></td>
+                            <td class="isin-code">US35671DBC83</td>
+                            <td><span class="rating-badge">Baa2 / BBB / BBB</span></td>
+                            <td class="num">5.450%</td>
+                            <td>2043/3/15</td>
+                            <td>2042/9/15</td>
+                            <td class="num">94.93</td>
+                            <td class="num">5.94%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.93%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.212%</td>
+                            <td class="num val-neg">-3.353%</td>
+                            <td class="num" style="font-weight:600;">10.64</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">寶僑公司</td>
+                            <td class="issuer2-name">PROCTER & GAMBLE CO/THE</td>
+                            <td><span class="badge-ticker">PG</span></td>
+                            <td class="isin-code">US742718FK01</td>
+                            <td><span class="rating-badge">Aa3 / AA- / -</span></td>
+                            <td class="num">3.600%</td>
+                            <td>2050/3/25</td>
+                            <td>-</td>
+                            <td class="num">75.1</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.50%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.046%</td>
+                            <td class="num val-neg">-3.232%</td>
+                            <td class="num" style="font-weight:600;">14.42</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">卡夫亨氏食品公司</td>
+                            <td class="issuer2-name">KRAFT HEINZ FOODS CO</td>
+                            <td><span class="badge-ticker">KHC</span></td>
+                            <td class="isin-code">US50077LAB27</td>
+                            <td><span class="rating-badge">Baa2*- / BBB / BBB</span></td>
+                            <td class="num">4.375%</td>
+                            <td>2046/6/1</td>
+                            <td>2045/12/1</td>
+                            <td class="num">78.53</td>
+                            <td class="num">6.32%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.29%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.053%</td>
+                            <td class="num val-neg">-6.494%</td>
+                            <td class="num" style="font-weight:600;">12.3</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">聯合健康集團公司</td>
+                            <td class="issuer2-name">UNITEDHEALTH GROUP INC</td>
+                            <td><span class="badge-ticker">UNH</span></td>
+                            <td class="isin-code">US91324PEK49</td>
+                            <td><span class="rating-badge">A2 / A+ / A</span></td>
+                            <td class="num">4.750%</td>
+                            <td>2052/5/15</td>
+                            <td>2051/11/15</td>
+                            <td class="num">82.96</td>
+                            <td class="num">6.08%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.07%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.988%</td>
+                            <td class="num val-neg">-5.455%</td>
+                            <td class="num" style="font-weight:600;">13.73</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">嬌生公司</td>
+                            <td class="issuer2-name">JOHNSON & JOHNSON</td>
+                            <td><span class="badge-ticker">JNJ</span></td>
+                            <td class="isin-code">US478160CS18</td>
+                            <td><span class="rating-badge">Aaa / AAA / -</span></td>
+                            <td class="num">2.250%</td>
+                            <td>2050/9/1</td>
+                            <td>2050/3/1</td>
+                            <td class="num">56.04</td>
+                            <td class="num">5.65%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.60%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.393%</td>
+                            <td class="num val-neg">-7.086%</td>
+                            <td class="num" style="font-weight:600;">16.06</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">埃克森美孚公司</td>
+                            <td class="issuer2-name">EXXON MOBIL CORPORATION</td>
+                            <td><span class="badge-ticker">XOM</span></td>
+                            <td class="isin-code">US30231GBM33</td>
+                            <td><span class="rating-badge">Aa2 / AA+ / -</span></td>
+                            <td class="num">3.452%</td>
+                            <td>2051/4/15</td>
+                            <td>2050/10/15</td>
+                            <td class="num">69.29</td>
+                            <td class="num">5.84%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.81%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.480%</td>
+                            <td class="num val-neg">-5.295%</td>
+                            <td class="num" style="font-weight:600;">14.65</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">雪佛龍公司</td>
+                            <td class="issuer2-name">CHEVRON CORP</td>
+                            <td><span class="badge-ticker">CVX</span></td>
+                            <td class="isin-code">US166764CA68</td>
+                            <td><span class="rating-badge">Aa2 / AA- / -</span></td>
+                            <td class="num">3.078%</td>
+                            <td>2050/5/11</td>
+                            <td>2049/11/11</td>
+                            <td class="num">65.19</td>
+                            <td class="num">5.83%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.80%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.203%</td>
+                            <td class="num val-neg">-5.907%</td>
+                            <td class="num" style="font-weight:600;">14.84</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">家得寶公司</td>
+                            <td class="issuer2-name">HOME DEPOT INC</td>
+                            <td><span class="badge-ticker">HD</span></td>
+                            <td class="isin-code">US437076CT73</td>
+                            <td><span class="rating-badge">A2 / A / WD</span></td>
+                            <td class="num">4.950%</td>
+                            <td>2052/9/15</td>
+                            <td>2052/3/15</td>
+                            <td class="num">87.09</td>
+                            <td class="num">5.94%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.93%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.057%</td>
+                            <td class="num val-neg">-6.234%</td>
+                            <td class="num" style="font-weight:600;">13.67</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">輝瑞大藥廠股份有限公司</td>
+                            <td class="issuer2-name">PFIZER INC</td>
+                            <td><span class="badge-ticker">PFE</span></td>
+                            <td class="isin-code">US717081FA61</td>
+                            <td><span class="rating-badge">A2 / A / WD</span></td>
+                            <td class="num">2.700%</td>
+                            <td>2050/5/28</td>
+                            <td>2049/11/28</td>
+                            <td class="num">59.89</td>
+                            <td class="num">5.89%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.84%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.383%</td>
+                            <td class="num val-neg">-5.977%</td>
+                            <td class="num" style="font-weight:600;">15.31</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">艾伯維公司</td>
+                            <td class="issuer2-name">ABBVIE INC</td>
+                            <td><span class="badge-ticker">ABBV</span></td>
+                            <td class="isin-code">US00287YCB39</td>
+                            <td><span class="rating-badge">A2 / A- / -</span></td>
+                            <td class="num">4.250%</td>
+                            <td>2049/11/21</td>
+                            <td>2049/5/21</td>
+                            <td class="num">79.02</td>
+                            <td class="num">5.94%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.92%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.235%</td>
+                            <td class="num val-neg">-5.671%</td>
+                            <td class="num" style="font-weight:600;">13.6</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">沃爾瑪公司</td>
+                            <td class="issuer2-name">WALMART INC</td>
+                            <td><span class="badge-ticker">WMT</span></td>
+                            <td class="isin-code">US931142EZ26</td>
+                            <td><span class="rating-badge">Aa2 / AA / AA</span></td>
+                            <td class="num">4.500%</td>
+                            <td>2052/9/9</td>
+                            <td>2052/3/9</td>
+                            <td class="num">83.73</td>
+                            <td class="num">5.72%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.71%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.084%</td>
+                            <td class="num val-neg">-6.424%</td>
+                            <td class="num" style="font-weight:600;">14.14</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">陶氏化學公司</td>
+                            <td class="issuer2-name">DOW CHEMICAL CO/THE</td>
+                            <td><span class="badge-ticker">DOW</span></td>
+                            <td class="isin-code">US260543DH36</td>
+                            <td><span class="rating-badge">Baa3 / BBB / BBB</span></td>
+                            <td class="num">6.900%</td>
+                            <td>2053/5/15</td>
+                            <td>2052/11/15</td>
+                            <td class="num">104.83</td>
+                            <td class="num">6.51%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.51%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.447%</td>
+                            <td class="num val-pos">+0.916%</td>
+                            <td class="num" style="font-weight:600;">12.47</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">信諾集團</td>
+                            <td class="issuer2-name">CIGNA GROUP/THE</td>
+                            <td><span class="badge-ticker">CI</span></td>
+                            <td class="isin-code">US125523AK66</td>
+                            <td><span class="rating-badge">Baa1 / A- / BBB+</span></td>
+                            <td class="num">4.900%</td>
+                            <td>2048/12/15</td>
+                            <td>2048/6/15</td>
+                            <td class="num">85.29</td>
+                            <td class="num">6.13%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.12%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.940%</td>
+                            <td class="num val-neg">-5.630%</td>
+                            <td class="num" style="font-weight:600;">12.85</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">3M</td>
+                            <td class="issuer2-name">3M COMPANY</td>
+                            <td><span class="badge-ticker">MMM</span></td>
+                            <td class="isin-code">US88579YBK64</td>
+                            <td><span class="rating-badge">A3 / BBB+ / A-</span></td>
+                            <td class="num">3.250%</td>
+                            <td>2049/8/26</td>
+                            <td>2049/2/26</td>
+                            <td class="num">66.68</td>
+                            <td class="num">5.96%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.92%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.290%</td>
+                            <td class="num val-neg">-4.780%</td>
+                            <td class="num" style="font-weight:600;">14.21</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">CVS保健公司</td>
+                            <td class="issuer2-name">CVS HEALTH CORP</td>
+                            <td><span class="badge-ticker">CVS</span></td>
+                            <td class="isin-code">US126650CZ11</td>
+                            <td><span class="rating-badge">Baa3 / BBB / BBB</span></td>
+                            <td class="num">5.050%</td>
+                            <td>2048/3/25</td>
+                            <td>2047/9/25</td>
+                            <td class="num">85.74</td>
+                            <td class="num">6.28%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.26%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+1.150%</td>
+                            <td class="num val-neg">-4.170%</td>
+                            <td class="num" style="font-weight:600;">12.32</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">博通公司</td>
+                            <td class="issuer2-name">BROADCOM INC</td>
+                            <td><span class="badge-ticker">AVGO</span></td>
+                            <td class="isin-code">USU1109MAT37</td>
+                            <td><span class="rating-badge">A3 / A- / A-</span></td>
+                            <td class="num">3.500%</td>
+                            <td>2041/2/15</td>
+                            <td>2040/8/15</td>
+                            <td class="num">75.24</td>
+                            <td class="num">6.17%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.10%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.490%</td>
+                            <td class="num val-neg">-9.080%</td>
+                            <td class="num" style="font-weight:600;">10.87</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">Saudi Government Internation</td>
+                            <td class="issuer2-name">SAUDI INTERNATIONAL BOND</td>
+                            <td><span class="badge-ticker">KSA</span></td>
+                            <td class="isin-code">XS2577136109</td>
+                            <td><span class="rating-badge">A1 / A+ / A+</span></td>
+                            <td class="num">5.000%</td>
+                            <td>2053/1/18</td>
+                            <td>-</td>
+                            <td class="num">83.67</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.27%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.520%</td>
+                            <td class="num val-neg">-7.370%</td>
+                            <td class="num" style="font-weight:600;">13.67</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">沙烏地阿拉伯國家石油公司</td>
+                            <td class="issuer2-name">SAUDI ARABIAN OIL CO</td>
+                            <td><span class="badge-ticker">ARAMCO</span></td>
+                            <td class="isin-code">XS1982113463</td>
+                            <td><span class="rating-badge">Aa3 / - / A+</span></td>
+                            <td class="num">4.250%</td>
+                            <td>2039/4/16</td>
+                            <td>-</td>
+                            <td class="num">86.94</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.71%</td>
+                            <td><span class="rank-badge">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.530%</td>
+                            <td class="num val-neg">-5.560%</td>
+                            <td class="num" style="font-weight:600;">9.48</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Financial Bonds -->
+    <div id="financial" class="tab-content">
+        <div class="cards-grid">
+            <div class="summary-card">
+                <span class="title">債券檔數</span>
+                <span class="value">41 檔</span>
+                <span class="desc">全球系統重要性銀行與金融機構</span>
+            </div>
+            <div class="summary-card">
+                <span class="title">平均票面利率 (Avg Coupon)</span>
+                <span class="value">5.47%</span>
+                <span class="desc">固定/浮動重設結構</span>
+            </div>
+            <div class="summary-card">
+                <span class="title">平均到期殖利率 (Avg YTM)</span>
+                <span class="value">5.44%</span>
+                <span class="desc">優質利差回報</span>
+            </div>
+            <div class="summary-card">
+                <span class="title">發行幣別 (Currency)</span>
+                <span class="value">USD</span>
+                <span class="desc">美元計價債券</span>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="search-fin" placeholder="搜尋發行機構、Ticker、ISIN或重設公式..." onkeyup="filterTable('search-fin', 'table-fin')">
+            </div>
+            <div class="hint-text">💡 點擊欄位標題可進行<strong>升冪 / 降冪排序</strong></div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-container">
+                <table id="table-fin">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('table-fin', 0)">Issuer (中文)</th>
+                            <th onclick="sortTable('table-fin', 1)">Issuer2 (英文)</th>
+                            <th onclick="sortTable('table-fin', 2)">Ticker</th>
+                            <th onclick="sortTable('table-fin', 3)">ISIN</th>
+                            <th onclick="sortTable('table-fin', 4)">Mood's/S&P/Fitch</th>
+                            <th class="num" onclick="sortTable('table-fin', 5, true)">Coupon (%)</th>
+                            <th onclick="sortTable('table-fin', 6)">Coupon Reset</th>
+                            <th onclick="sortTable('table-fin', 7)">Maturity Date</th>
+                            <th onclick="sortTable('table-fin', 8)">Call Date</th>
+                            <th class="num" onclick="sortTable('table-fin', 9, true)">Offer (%)</th>
+                            <th class="num" onclick="sortTable('table-fin', 10, true)">YTC (%)</th>
+                            <th class="num" onclick="sortTable('table-fin', 11, true)">YTM (%)</th>
+                            <th onclick="sortTable('table-fin', 12)">RANK</th>
+                            <th class="num" onclick="sortTable('table-fin', 13, true)">5D %</th>
+                            <th class="num" onclick="sortTable('table-fin', 14, true)">YTD (%)</th>
+                            <th onclick="sortTable('table-fin', 15)">Curren</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="issuer-name">美國銀行</td>
+                            <td class="issuer2-name">BANK OF AMERICA CORP</td>
+                            <td><span class="badge-ticker">BAC</span></td>
+                            <td class="isin-code">US06051GMA49</td>
+                            <td><span class="rating-badge">A1 / A- / AA-</span></td>
+                            <td class="num">5.468%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.65%</td>
+                            <td>2035/1/23</td>
+                            <td>2034/1/23</td>
+                            <td class="num">101.45</td>
+                            <td class="num">5.23%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.24%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-pos">+0.188%</td>
+                            <td class="num val-neg">-3.716%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">美國銀行</td>
+                            <td class="issuer2-name">BANK OF AMERICA CORP</td>
+                            <td><span class="badge-ticker">BAC</span></td>
+                            <td class="isin-code">US06051GMD87</td>
+                            <td><span class="rating-badge">A3 / BBB+ / A</span></td>
+                            <td class="num">5.518%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.738%</td>
+                            <td>2035/1/25</td>
+                            <td>2034/1/25</td>
+                            <td class="num">99.75</td>
+                            <td class="num">5.55%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.54%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-neg">-0.021%</td>
+                            <td class="num val-neg">-3.774%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">花旗集團公司</td>
+                            <td class="issuer2-name">CITIGROUP INC</td>
+                            <td><span class="badge-ticker">C</span></td>
+                            <td class="isin-code">US172967PL97</td>
+                            <td><span class="rating-badge">A3 / BBB+ / A</span></td>
+                            <td class="num">5.449%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.447%</td>
+                            <td>2035/6/11</td>
+                            <td>2034/6/11</td>
+                            <td class="num">100.94</td>
+                            <td class="num">5.30%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.28%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-pos">+0.099%</td>
+                            <td class="num val-neg">-3.538%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">摩根大通銀行</td>
+                            <td class="issuer2-name">JPMORGAN CHASE & CO</td>
+                            <td><span class="badge-ticker">JPM</span></td>
+                            <td class="isin-code">US46647PDK93</td>
+                            <td><span class="rating-badge">A3 / BBB+ / A</span></td>
+                            <td class="num">5.717%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+2.58%</td>
+                            <td>2033/9/14</td>
+                            <td>2032/9/14</td>
+                            <td class="num">102.94</td>
+                            <td class="num">5.15%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.28%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-neg">-0.235%</td>
+                            <td class="num val-neg">-3.854%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">摩根大通銀行</td>
+                            <td class="issuer2-name">JPMORGAN CHASE & CO</td>
+                            <td><span class="badge-ticker">JPM</span></td>
+                            <td class="isin-code">US46647PEK84</td>
+                            <td><span class="rating-badge">A1 / A- / AA-</span></td>
+                            <td class="num">5.294%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.46%</td>
+                            <td>2035/7/22</td>
+                            <td>2034/7/22</td>
+                            <td class="num">100.31</td>
+                            <td class="num">5.24%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.24%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-pos">+0.119%</td>
+                            <td class="num val-neg">-3.934%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">富國銀行</td>
+                            <td class="issuer2-name">WELLS FARGO & COMPANY</td>
+                            <td><span class="badge-ticker">WFC</span></td>
+                            <td class="isin-code">US95000U3N13</td>
+                            <td><span class="rating-badge">A1 / A- / A+</span></td>
+                            <td class="num">5.211%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.38%</td>
+                            <td>2035/12/3</td>
+                            <td>2034/12/3</td>
+                            <td class="num">99.24</td>
+                            <td class="num">5.32%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.30%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-pos">+0.275%</td>
+                            <td class="num val-neg">-4.031%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">富國銀行</td>
+                            <td class="issuer2-name">WELLS FARGO & COMPANY</td>
+                            <td><span class="badge-ticker">WFC</span></td>
+                            <td class="isin-code">US95000U3K73</td>
+                            <td><span class="rating-badge">A1 / BBB+ / A+</span></td>
+                            <td class="num">5.499%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.78%</td>
+                            <td>2035/1/23</td>
+                            <td>2034/1/23</td>
+                            <td class="num">101.45</td>
+                            <td class="num">5.26%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.28%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-pos">+0.214%</td>
+                            <td class="num val-neg">-3.854%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">摩根士丹利</td>
+                            <td class="issuer2-name">MORGAN STANLEY</td>
+                            <td><span class="badge-ticker">MS</span></td>
+                            <td class="isin-code">US61747YFM21</td>
+                            <td><span class="rating-badge">Baa1 / BBB+ / A-</span></td>
+                            <td class="num">5.942%</td>
+                            <td style="font-size:12px; color:#475569;">H15T5Y+1.8%</td>
+                            <td>2039/2/7</td>
+                            <td>2034/2/7</td>
+                            <td class="num">101.79</td>
+                            <td class="num">5.64%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.82%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-pos">+0.066%</td>
+                            <td class="num val-neg">-4.289%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">匯豐控股有限公司</td>
+                            <td class="issuer2-name">HSBC HOLDINGS PLC</td>
+                            <td><span class="badge-ticker">HSBC</span></td>
+                            <td class="isin-code">US404280DH94</td>
+                            <td><span class="rating-badge">A3 / A- / A+</span></td>
+                            <td class="num">5.402%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+2.87%</td>
+                            <td>2033/8/11</td>
+                            <td>2032/8/11</td>
+                            <td class="num">101.19</td>
+                            <td class="num">5.17%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.34%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-neg">-0.041%</td>
+                            <td class="num val-neg">-3.463%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">匯豐控股有限公司</td>
+                            <td class="issuer2-name">HSBC HOLDINGS PLC</td>
+                            <td><span class="badge-ticker">HSBC</span></td>
+                            <td class="isin-code">US404280DC08</td>
+                            <td><span class="rating-badge">Baa1 / BBB+ / A</span></td>
+                            <td class="num">4.762%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+2.53%</td>
+                            <td>2033/3/29</td>
+                            <td>2032/3/29</td>
+                            <td class="num">97.42</td>
+                            <td class="num">5.30%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.42%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-neg">-0.107%</td>
+                            <td class="num val-neg">-3.161%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">匯豐控股有限公司</td>
+                            <td class="issuer2-name">HSBC HOLDINGS PLC</td>
+                            <td><span class="badge-ticker">HSBC</span></td>
+                            <td class="isin-code">US404280EE54</td>
+                            <td><span class="rating-badge">A3 / A- / A+</span></td>
+                            <td class="num">5.719%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.78%</td>
+                            <td>2035/3/4</td>
+                            <td>2034/3/4</td>
+                            <td class="num">101.76</td>
+                            <td class="num">5.43%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.43%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-pos">+0.163%</td>
+                            <td class="num val-neg">-4.621%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">巴克萊集團</td>
+                            <td class="issuer2-name">BARCLAYS PLC</td>
+                            <td><span class="badge-ticker">BACR</span></td>
+                            <td class="isin-code">US06738ECA10</td>
+                            <td><span class="rating-badge">Baa1 / BBB / A</span></td>
+                            <td class="num">5.746%</td>
+                            <td style="font-size:12px; color:#475569;">H15T1Y+3%</td>
+                            <td>2033/8/9</td>
+                            <td>2032/8/9</td>
+                            <td class="num">102.53</td>
+                            <td class="num">5.24%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.46%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-neg">-0.249%</td>
+                            <td class="num val-neg">-3.452%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">巴克萊集團</td>
+                            <td class="issuer2-name">BARCLAYS PLC</td>
+                            <td><span class="badge-ticker">BACR</span></td>
+                            <td class="isin-code">US06738ECL74</td>
+                            <td><span class="rating-badge">Baa1 / BBB+ / A</span></td>
+                            <td class="num">6.692%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+2.62%</td>
+                            <td>2034/9/13</td>
+                            <td>2033/9/13</td>
+                            <td class="num">107.26</td>
+                            <td class="num">5.44%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.52%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-pos">+0.095%</td>
+                            <td class="num val-neg">-4.237%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">法國巴黎銀行股份有限公司</td>
+                            <td class="issuer2-name">BNP PARIBAS</td>
+                            <td><span class="badge-ticker">BNP</span></td>
+                            <td class="isin-code">US09659X2W15</td>
+                            <td><span class="rating-badge">Baa1 / A- / A+</span></td>
+                            <td class="num">5.738%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.88%</td>
+                            <td>2035/2/20</td>
+                            <td>2034/2/20</td>
+                            <td class="num">102.37</td>
+                            <td class="num">5.35%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.37%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-pos">+0.134%</td>
+                            <td class="num val-neg">-3.699%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">法國農業信貸銀行</td>
+                            <td class="issuer2-name">CREDIT AGRICOLE SA</td>
+                            <td><span class="badge-ticker">ACAFP</span></td>
+                            <td class="isin-code">USF2R125Q730</td>
+                            <td><span class="rating-badge">Baa1 / BBB+ / A</span></td>
+                            <td class="num">6.251%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+2.67%</td>
+                            <td>2035/1/10</td>
+                            <td>2034/1/10</td>
+                            <td class="num">103.05</td>
+                            <td class="num">5.74%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.80%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-pos">+0.086%</td>
+                            <td class="num val-neg">-4.066%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">西班牙桑坦德銀行</td>
+                            <td class="issuer2-name">BANCO SANTANDER SA</td>
+                            <td><span class="badge-ticker">SANTAN</span></td>
+                            <td class="isin-code">US05971KAG40</td>
+                            <td><span class="rating-badge">Baa2 / BBB+ / BBB+</span></td>
+                            <td class="num">2.749%</td>
+                            <td style="font-size:12px; color:#475569;">-</td>
+                            <td>2030/12/3</td>
+                            <td>-</td>
+                            <td class="num">91.33</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.03%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-neg">-0.186%</td>
+                            <td class="num val-neg">-0.968%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">渣打集團有限公司</td>
+                            <td class="issuer2-name">STANDARD CHARTERED PLC</td>
+                            <td><span class="badge-ticker">STANLN</span></td>
+                            <td class="isin-code">XS1793294841</td>
+                            <td><span class="rating-badge">Baa2 / BBB / BBB+</span></td>
+                            <td class="num">4.866%</td>
+                            <td style="font-size:12px; color:#475569;">USISDA05+1.97%</td>
+                            <td>2033/3/15</td>
+                            <td>2028/3/15</td>
+                            <td class="num">100.55</td>
+                            <td class="num">4.50%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.72%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-neg">-0.112%</td>
+                            <td class="num val-neg">-1.022%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">渣打集團有限公司</td>
+                            <td class="issuer2-name">STANDARD CHARTERED PLC</td>
+                            <td><span class="badge-ticker">STANLN</span></td>
+                            <td class="isin-code">USG84228FV59</td>
+                            <td><span class="rating-badge">A3 / BBB+ / A</span></td>
+                            <td class="num">6.296%</td>
+                            <td style="font-size:12px; color:#475569;">H15T1Y+2.58%</td>
+                            <td>2034/7/6</td>
+                            <td>2033/7/6</td>
+                            <td class="num">105.32</td>
+                            <td class="num">5.36%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.49%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-neg">-0.060%</td>
+                            <td class="num val-neg">-3.675%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">渣打集團有限公司</td>
+                            <td class="issuer2-name">STANDARD CHARTERED PLC</td>
+                            <td><span class="badge-ticker">STANLN</span></td>
+                            <td class="isin-code">XS2358287824</td>
+                            <td><span class="rating-badge">A3 / BBB+ / A</span></td>
+                            <td class="num">2.678%</td>
+                            <td style="font-size:12px; color:#475569;">H15T1Y+1.2%</td>
+                            <td>2032/6/29</td>
+                            <td>2031/6/29</td>
+                            <td class="num">89.94</td>
+                            <td class="num">5.05%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.08%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-neg">-0.176%</td>
+                            <td class="num val-neg">-1.728%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">瑞士信貸集團</td>
+                            <td class="issuer2-name">UBS GROUP AG</td>
+                            <td><span class="badge-ticker">UBS</span></td>
+                            <td class="isin-code">USH42097EU71</td>
+                            <td><span class="rating-badge">A2 / A- / A+</span></td>
+                            <td class="num">5.699%</td>
+                            <td style="font-size:12px; color:#475569;">H15T1Y+1.77%</td>
+                            <td>2035/2/8</td>
+                            <td>2034/2/8</td>
+                            <td class="num">101.91</td>
+                            <td class="num">5.38%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.42%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-pos">+0.069%</td>
+                            <td class="num val-neg">-4.212%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">三井住友金融集團公司</td>
+                            <td class="issuer2-name">SUMITOMO MITSUI FINL GRP</td>
+                            <td><span class="badge-ticker">SUMIBK</span></td>
+                            <td class="isin-code">US86562MDU18</td>
+                            <td><span class="rating-badge">A1 / A- / -</span></td>
+                            <td class="num">5.632%</td>
+                            <td style="font-size:12px; color:#475569;">-</td>
+                            <td>2035/1/15</td>
+                            <td>-</td>
+                            <td class="num">101.99</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.33%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-neg">-0.044%</td>
+                            <td class="num val-neg">-4.870%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">瑞穗金融集團</td>
+                            <td class="issuer2-name">MIZUHO FINANCIAL GROUP</td>
+                            <td><span class="badge-ticker">MIZUHO</span></td>
+                            <td class="isin-code">US60687YDJ55</td>
+                            <td><span class="rating-badge">A1 / A- / -</span></td>
+                            <td class="num">5.422%</td>
+                            <td style="font-size:12px; color:#475569;">H15T1Y+0.98%</td>
+                            <td>2036/5/13</td>
+                            <td>2035/5/13</td>
+                            <td class="num">100.01</td>
+                            <td class="num">5.42%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.38%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-pos">+0.074%</td>
+                            <td class="num val-neg">-4.585%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">三菱UFJ金融集團公司</td>
+                            <td class="issuer2-name">MITSUBISHI UFJ FIN GRP</td>
+                            <td><span class="badge-ticker">MUFG</span></td>
+                            <td class="isin-code">US606822DC52</td>
+                            <td><span class="rating-badge">A1 / A- / A-</span></td>
+                            <td class="num">5.406%</td>
+                            <td style="font-size:12px; color:#475569;">H15T1Y+1.97%</td>
+                            <td>2034/4/19</td>
+                            <td>2033/4/19</td>
+                            <td class="num">101.33</td>
+                            <td class="num">5.17%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.26%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-neg">-0.004%</td>
+                            <td class="num val-neg">-4.157%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">東亞銀行有限公司</td>
+                            <td class="issuer2-name">BANK OF EAST ASIA LTD</td>
+                            <td><span class="badge-ticker">BNKEA</span></td>
+                            <td class="isin-code">XS2813323685</td>
+                            <td><span class="rating-badge">Baa3 / BBB- / -</span></td>
+                            <td class="num">6.750%</td>
+                            <td style="font-size:12px; color:#475569;">H15T1Y+2.55%</td>
+                            <td>2034/6/27</td>
+                            <td>2029/6/27</td>
+                            <td class="num">104.3</td>
+                            <td class="num">5.10%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.17%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-neg">-0.214%</td>
+                            <td class="num val-neg">-1.421%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">曼谷銀行公開有限公司/香港</td>
+                            <td class="issuer2-name">BANGKOK BANK PCL/HK</td>
+                            <td><span class="badge-ticker">BBLTB</span></td>
+                            <td class="isin-code">USY0606WCA63</td>
+                            <td><span class="rating-badge">Baa3 / - / BB+</span></td>
+                            <td class="num">3.733%</td>
+                            <td style="font-size:12px; color:#475569;">H15T5Y+1.9%</td>
+                            <td>2034/9/25</td>
+                            <td>2029/9/25</td>
+                            <td class="num">95.92</td>
+                            <td class="num">5.18%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.82%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-neg">-0.260%</td>
+                            <td class="num val-neg">-0.067%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">多倫多道明銀行</td>
+                            <td class="issuer2-name">TORONTO-DOMINION BANK</td>
+                            <td><span class="badge-ticker">TD</span></td>
+                            <td class="isin-code">US89115A2E11</td>
+                            <td><span class="rating-badge">A2 / A / AA-</span></td>
+                            <td class="num">4.456%</td>
+                            <td style="font-size:12px; color:#475569;">-</td>
+                            <td>2032/6/8</td>
+                            <td>-</td>
+                            <td class="num">98.16</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.82%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-neg">-0.029%</td>
+                            <td class="num val-neg">-2.888%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">澳盛銀行集團有限公司</td>
+                            <td class="issuer2-name">AUST & NZ BANKING GROUP</td>
+                            <td><span class="badge-ticker">ANZ</span></td>
+                            <td class="isin-code">USQ0954PVM14</td>
+                            <td><span class="rating-badge">A3 / BBB+ / A</span></td>
+                            <td class="num">6.742%</td>
+                            <td style="font-size:12px; color:#475569;">-</td>
+                            <td>2032/12/8</td>
+                            <td>-</td>
+                            <td class="num">107.66</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.29%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-neg">-0.190%</td>
+                            <td class="num val-neg">-3.525%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">麥格理集團有限公司</td>
+                            <td class="issuer2-name">MACQUARIE GROUP LTD</td>
+                            <td><span class="badge-ticker">MQGAU</span></td>
+                            <td class="isin-code">US55608KBQ76</td>
+                            <td><span class="rating-badge">A1 / BBB+ / A</span></td>
+                            <td class="num">6.255%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+2.303%</td>
+                            <td>2034/12/7</td>
+                            <td>2033/12/7</td>
+                            <td class="num">105.46</td>
+                            <td class="num">5.34%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.40%</td>
+                            <td><span class="rank-badge ">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.032%</td>
+                            <td class="num val-neg">-4.139%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">野村控股</td>
+                            <td class="issuer2-name">NOMURA HOLDINGS INC</td>
+                            <td><span class="badge-ticker">NOMURA</span></td>
+                            <td class="isin-code">US65535HCB33</td>
+                            <td><span class="rating-badge">Baa1 / BBB+ / A-</span></td>
+                            <td class="num">5.491%</td>
+                            <td style="font-size:12px; color:#475569;">-</td>
+                            <td>2035/6/29</td>
+                            <td>-</td>
+                            <td class="num">100.8</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.38%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-pos">+0.120%</td>
+                            <td class="num val-neg">-3.371%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">三井住友信託銀行有限公司</td>
+                            <td class="issuer2-name">SUMITOMO MITSUI TR BK LT</td>
+                            <td><span class="badge-ticker">SUMITR</span></td>
+                            <td class="isin-code">USJ7771YSY43</td>
+                            <td><span class="rating-badge">A1 / A / -</span></td>
+                            <td class="num">5.350%</td>
+                            <td style="font-size:12px; color:#475569;">-</td>
+                            <td>2034/3/7</td>
+                            <td>-</td>
+                            <td class="num">101.0</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.19%</td>
+                            <td><span class="rank-badge ">Sr Unsecured</span></td>
+                            <td class="num val-neg">-0.073%</td>
+                            <td class="num val-neg">-3.999%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">韓國進出口銀行</td>
+                            <td class="issuer2-name">EXPORT-IMPORT BANK KOREA</td>
+                            <td><span class="badge-ticker">EIBKOR</span></td>
+                            <td class="isin-code">US302154DW60</td>
+                            <td><span class="rating-badge">Aa2 / AA / AA-</span></td>
+                            <td class="num">5.125%</td>
+                            <td style="font-size:12px; color:#475569;">-</td>
+                            <td>2033/1/11</td>
+                            <td>-</td>
+                            <td class="num">102.75</td>
+                            <td class="num">-</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.62%</td>
+                            <td><span class="rank-badge ">Sr Unsecured</span></td>
+                            <td class="num val-pos">+0.038%</td>
+                            <td class="num val-neg">-2.999%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">南洋商業銀行</td>
+                            <td class="issuer2-name">NANYANG COMMERCIAL BANK</td>
+                            <td><span class="badge-ticker">NANYAN</span></td>
+                            <td class="isin-code">XS2842544491</td>
+                            <td><span class="rating-badge">-</span></td>
+                            <td class="num">6.000%</td>
+                            <td style="font-size:12px; color:#475569;">H15T5Y+2.1%</td>
+                            <td>2034/8/6</td>
+                            <td>2029/8/6</td>
+                            <td class="num">103.13</td>
+                            <td class="num">4.85%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.80%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-neg">-0.160%</td>
+                            <td class="num val-neg">-1.225%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">法國興業銀行股份有限公司</td>
+                            <td class="issuer2-name">SOCIETE GENERALE</td>
+                            <td><span class="badge-ticker">SOCGEN</span></td>
+                            <td class="isin-code">US83368TBY38</td>
+                            <td><span class="rating-badge">Baa3 / BBB- / BBB</span></td>
+                            <td class="num">7.132%</td>
+                            <td style="font-size:12px; color:#475569;">H15T1Y+2.95%</td>
+                            <td>2055/1/19</td>
+                            <td>2054/1/19</td>
+                            <td class="num">100.57</td>
+                            <td class="num">7.08%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">7.08%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-pos">+0.240%</td>
+                            <td class="num val-neg">-5.336%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">匯豐控股有限公司</td>
+                            <td class="issuer2-name">HSBC HOLDINGS PLC</td>
+                            <td><span class="badge-ticker">HSBC</span></td>
+                            <td class="isin-code">US404280EL97</td>
+                            <td><span class="rating-badge">Baa1 / BBB+ / A</span></td>
+                            <td class="num">5.874%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.9%</td>
+                            <td>2035/11/18</td>
+                            <td>2034/11/18</td>
+                            <td class="num">101.03</td>
+                            <td class="num">5.71%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.70%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-pos">+0.130%</td>
+                            <td class="num val-neg">-4.326%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">匯豐控股有限公司</td>
+                            <td class="issuer2-name">HSBC HOLDINGS PLC</td>
+                            <td><span class="badge-ticker">HSBC</span></td>
+                            <td class="isin-code">US404280ES41</td>
+                            <td><span class="rating-badge">A3 / A- / A+</span></td>
+                            <td class="num">5.450%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.56%</td>
+                            <td>2036/3/3</td>
+                            <td>2035/3/3</td>
+                            <td class="num">99.56</td>
+                            <td class="num">5.52%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.49%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-pos">+0.050%</td>
+                            <td class="num val-neg">-4.674%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">瑞士信貸集團</td>
+                            <td class="issuer2-name">UBS GROUP AG</td>
+                            <td><span class="badge-ticker">UBS</span></td>
+                            <td class="isin-code">US404289FD48</td>
+                            <td><span class="rating-badge">A2 / A- / A+</span></td>
+                            <td class="num">5.580%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.76%</td>
+                            <td>2036/5/9</td>
+                            <td>2035/5/9</td>
+                            <td class="num">100.82</td>
+                            <td class="num">5.46%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.46%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-pos">+0.140%</td>
+                            <td class="num val-neg">-4.167%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">渣打集團有限公司</td>
+                            <td class="issuer2-name">STANDARD CHARTERED PLC</td>
+                            <td><span class="badge-ticker">STANLN</span></td>
+                            <td class="isin-code">XS3068732455</td>
+                            <td><span class="rating-badge">A3 / BBB+ / A</span></td>
+                            <td class="num">5.244%</td>
+                            <td style="font-size:12px; color:#475569;">H15T1Y+1.35%</td>
+                            <td>2031/5/13</td>
+                            <td>2030/5/13</td>
+                            <td class="num">101.54</td>
+                            <td class="num">4.78%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.90%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-neg">-0.120%</td>
+                            <td class="num val-neg">-2.426%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">花旗集團公司</td>
+                            <td class="issuer2-name">CITIGROUP INC</td>
+                            <td><span class="badge-ticker">C</span></td>
+                            <td class="isin-code">US172967QA24</td>
+                            <td><span class="rating-badge">A3 / A- / A+</span></td>
+                            <td class="num">4.952%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.463%</td>
+                            <td>2031/5/7</td>
+                            <td>2030/5/7</td>
+                            <td class="num">100.67</td>
+                            <td class="num">4.75%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">4.83%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-neg">-0.150%</td>
+                            <td class="num val-neg">-2.454%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">摩根大通銀行</td>
+                            <td class="issuer2-name">JPMORGAN CHASE & CO</td>
+                            <td><span class="badge-ticker">JPM</span></td>
+                            <td class="isin-code">US46647PER38</td>
+                            <td><span class="rating-badge">A1 / A- / AA-</span></td>
+                            <td class="num">4.946%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.34%</td>
+                            <td>2035/10/22</td>
+                            <td>2034/10/22</td>
+                            <td class="num">98.03</td>
+                            <td class="num">5.25%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.23%</td>
+                            <td><span class="rank-badge rank-tlac">TLAC</span></td>
+                            <td class="num val-pos">+0.240%</td>
+                            <td class="num val-neg">-4.093%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">法國巴黎銀行股份有限公司</td>
+                            <td class="issuer2-name">BNP PARIBAS</td>
+                            <td><span class="badge-ticker">BNP</span></td>
+                            <td class="isin-code">US09660V2D44</td>
+                            <td><span class="rating-badge">Baa2 / BBB+ / A-</span></td>
+                            <td class="num">5.906%</td>
+                            <td style="font-size:12px; color:#475569;">SOFRRATE+1.92%</td>
+                            <td>2039/11/19</td>
+                            <td>2034/11/19</td>
+                            <td class="num">101.25</td>
+                            <td class="num">5.71%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">5.70%</td>
+                            <td><span class="rank-badge rank-tlac">Tier2 TLAC</span></td>
+                            <td class="num val-pos">+0.040%</td>
+                            <td class="num val-neg">-3.638%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                        <tr>
+                            <td class="issuer-name">東洋壽險</td>
+                            <td class="issuer2-name">TONGYANGLIFEINSURANCECO</td>
+                            <td><span class="badge-ticker">TYANLI</span></td>
+                            <td class="isin-code">XS3045733840</td>
+                            <td><span class="rating-badge">Baa2 / - / BBB</span></td>
+                            <td class="num">6.250%</td>
+                            <td style="font-size:12px; color:#475569;">H15T5Y+2.4%</td>
+                            <td>2035/5/7</td>
+                            <td>2030/5/7</td>
+                            <td class="num">103.42</td>
+                            <td class="num">5.22%</td>
+                            <td class="num" style="font-weight:700; color:#1e3a8a;">6.02%</td>
+                            <td><span class="rank-badge ">非累積順位</span></td>
+                            <td class="num val-neg">-0.140%</td>
+                            <td class="num val-neg">-1.325%</td>
+                            <td style="font-weight:600; color:#475569;">USD</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 投資級債券行情資訊庫 • 數據僅供投資研究參考，請以最新市場撮合價格為準。</p>
+    </footer>
+</div>
+
+<script>
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        if (btn) btn.classList.add('active');
+    }
+
+    function filterTable(inputId, tableId) {
+        const input = document.getElementById(inputId);
+        const filter = input.value.toUpperCase();
+        const table = document.getElementById(tableId);
+        const trs = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < trs.length; i++) {
+            let rowText = trs[i].textContent || trs[i].innerText;
+            if (rowText.toUpperCase().indexOf(filter) > -1) {
+                trs[i].style.display = "";
+            } else {
+                trs[i].style.display = "none";
+            }
+        }
+    }
+
+    let sortState = {};
+
+    function sortTable(tableId, colIndex, isNumeric = false) {
+        const table = document.getElementById(tableId);
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const ths = table.querySelectorAll('th');
+        
+        const stateKey = `${tableId}-${colIndex}`;
+        const isAsc = sortState[stateKey] === 'asc' ? false : true;
+        sortState[stateKey] = isAsc ? 'asc' : 'desc';
+
+        ths.forEach(th => th.classList.remove('sort-asc', 'sort-desc'));
+        ths[colIndex].classList.add(isAsc ? 'sort-asc' : 'sort-desc');
+
+        rows.sort((a, b) => {
+            let aText = a.cells[colIndex].textContent.trim();
+            let bText = b.cells[colIndex].textContent.trim();
+
+            if (isNumeric) {
+                let aNum = parseFloat(aText.replace(/[^0-9.-]+/g, ""));
+                let bNum = parseFloat(bText.replace(/[^0-9.-]+/g, ""));
+                if (isNaN(aNum)) aNum = -999999;
+                if (isNaN(bNum)) bNum = -999999;
+                return isAsc ? aNum - bNum : bNum - aNum;
+            } else {
+                return isAsc ? aText.localeCompare(bText, 'zh-Hant') : bText.localeCompare(aText, 'zh-Hant');
+            }
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+</script>
+
+</body>
+</html>
+investment_grade_bond_market.html
+目前顯示的是「investment_grade_bond_market.html」。

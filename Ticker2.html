@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>投資級債券清單 | IG Bond Monitor</title>
+<style>
+:root{
+  --bg:#0b0f14;
+  --panel:#111823;
+  --panel2:#0e141d;
+  --line:#1f2b3a;
+  --line-soft:#182230;
+  --text:#dbe6f0;
+  --text-dim:#7f93a8;
+  --text-faint:#546475;
+  --accent:#3ddc97;
+  --accent-dim:#2a9d70;
+  --red:#ff6b6b;
+  --amber:#f2b84b;
+  --mono: "IBM Plex Mono","SF Mono",Consolas,monospace;
+  --sans: "IBM Plex Sans","Segoe UI",-apple-system,sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+::selection{background:var(--accent-dim);color:#00140b;}
+
+/* ---------- Header ---------- */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:linear-gradient(180deg,#0d131b 0%, #0b0f14 100%);
+  border-bottom:1px solid var(--line);
+  padding:14px 24px;
+}
+.topbar-inner{max-width:1400px;margin:0 auto;display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.brand{display:flex;align-items:baseline;gap:10px;}
+.brand .mark{
+  font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:2px;
+  color:#00140b;background:var(--accent);padding:3px 7px;border-radius:3px;
+}
+.brand h1{font-size:16px;font-weight:600;margin:0;letter-spacing:0.3px;color:var(--text);}
+.brand .sub{font-family:var(--mono);font-size:11px;color:var(--text-faint);}
+.asof{font-family:var(--mono);font-size:12px;color:var(--text-dim);text-align:right;}
+.asof b{color:var(--accent);font-weight:600;}
+
+/* ---------- Tabs ---------- */
+.tabs{
+  max-width:1400px;margin:0 auto;padding:0 24px;
+  display:flex;gap:2px;border-bottom:1px solid var(--line);
+  background:var(--bg);
+}
+.tab{
+  font-family:var(--mono);font-size:12.5px;letter-spacing:0.5px;
+  padding:12px 18px;cursor:pointer;color:var(--text-dim);
+  border-bottom:2px solid transparent;user-select:none;
+  transition:color .15s;
+}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab .count{color:var(--text-faint);margin-left:6px;font-size:11px;}
+.tab.active .count{color:var(--accent-dim);}
+
+/* ---------- Controls ---------- */
+.controls{
+  max-width:1400px;margin:0 auto;padding:16px 24px 8px;
+  display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+}
+.search-wrap{position:relative;flex:1;min-width:220px;max-width:360px;}
+.search-wrap input{
+  width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);
+  font-family:var(--sans);font-size:13px;padding:9px 12px 9px 32px;border-radius:6px;
+  outline:none;transition:border-color .15s;
+}
+.search-wrap input:focus{border-color:var(--accent-dim);}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:.5;}
+.search-wrap input::placeholder{color:var(--text-faint);}
+
+.chip-group{display:flex;gap:6px;flex-wrap:wrap;}
+.chip{
+  font-family:var(--mono);font-size:11px;padding:6px 11px;border-radius:20px;
+  border:1px solid var(--line);color:var(--text-dim);cursor:pointer;background:var(--panel);
+  transition:all .15s;user-select:none;
+}
+.chip:hover{border-color:var(--text-dim);color:var(--text);}
+.chip.active{background:var(--accent-dim);border-color:var(--accent-dim);color:#00140b;font-weight:600;}
+
+.meta-line{
+  max-width:1400px;margin:0 auto;padding:0 24px 10px;
+  font-family:var(--mono);font-size:11px;color:var(--text-faint);
+  display:flex;justify-content:space-between;
+}
+.meta-line span b{color:var(--text-dim);}
+
+/* ---------- Table ---------- */
+.table-wrap{max-width:1400px;margin:0 auto;padding:0 24px 40px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:1100px;}
+thead th{
+  position:static;background:var(--panel2);
+  text-align:left;padding:9px 10px;font-weight:600;font-size:11px;
+  color:var(--text-dim);border-bottom:1px solid var(--line);
+  cursor:pointer;white-space:nowrap;letter-spacing:0.3px;
+  user-select:none;
+}
+thead th:hover{color:var(--text);}
+thead th .arrow{font-size:9px;margin-left:3px;color:var(--accent);}
+thead th.num, td.num{text-align:right;}
+tbody td{
+  padding:8px 10px;border-bottom:1px solid var(--line-soft);white-space:nowrap;
+  font-family:var(--sans);
+}
+tbody tr{transition:background .1s;}
+tbody tr:hover{background:#131d29;}
+td.num, td.mono{font-family:var(--mono);}
+td.issuer-cn{color:var(--text);font-weight:500;}
+td.issuer-en{color:var(--text-dim);font-size:11.5px;}
+td.ticker{font-family:var(--mono);color:var(--accent);font-weight:600;font-size:12px;}
+td.isin{font-family:var(--mono);color:var(--text-faint);font-size:11px;letter-spacing:0.3px;}
+td.rating{font-family:var(--mono);font-size:11px;color:var(--text-dim);}
+.rank-badge{
+  font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:3px;
+  border:1px solid var(--line);color:var(--text-dim);white-space:nowrap;
+}
+.rank-badge.tlac{border-color:#3d5ddc55;color:#7d9bff;}
+.rank-badge.tier2{border-color:#f2b84b55;color:var(--amber);}
+.pos{color:var(--accent);}
+.neg{color:var(--red);}
+.dim{color:var(--text-faint);}
+td.currency{font-family:var(--mono);font-size:11px;color:var(--text-faint);}
+
+.empty-state{
+  max-width:1400px;margin:60px auto;text-align:center;color:var(--text-faint);
+  font-family:var(--mono);font-size:13px;
+}
+
+footer{
+  max-width:1400px;margin:0 auto;padding:20px 24px 40px;
+  font-family:var(--mono);font-size:10.5px;color:var(--text-faint);
+  border-top:1px solid var(--line-soft);
+}
+
+@media (max-width:700px){
+  .topbar{padding:12px 16px;}
+  .controls,.meta-line,.table-wrap,.tabs,footer{padding-left:16px;padding-right:16px;}
+  thead th{top:88px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="mark">IG</span>
+      <div>
+        <h1>投資級債券清單</h1>
+        <div class="sub">Investment Grade Bond Monitor</div>
+      </div>
+    </div>
+    <div class="asof">資料日期 AS OF <b>2026/08/25</b></div>
+  </div>
+</div>
+
+<div class="tabs" id="tabs">
+  <div class="tab active" data-tab="short">短年期 IG 債券 <span class="count"></span></div>
+  <div class="tab" data-tab="long">長年期 IG 債券 <span class="count"></span></div>
+  <div class="tab" data-tab="fin">金融債券 <span class="count"></span></div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="searchInput" type="text" placeholder="搜尋發行人、代碼、ISIN...">
+  </div>
+  <div class="chip-group" id="rankChips"></div>
+</div>
+
+<div class="meta-line">
+  <span>顯示 <b id="rowCount">0</b> / <span id="totalCount">0</span> 筆</span>
+  <span id="sortInfo">點擊欄位標題排序</span>
+</div>
+
+<div class="table-wrap">
+  <table id="dataTable">
+    <thead id="tableHead"></thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  <div class="empty-state" id="emptyState" style="display:none;">— 沒有符合條件的資料 —</div>
+</div>
+
+<footer>
+  資料來源：使用者提供之債券報價截圖（08/25/2026）。本頁僅供資料檢視，非投資建議，交易前請核對原始報價來源。<br>
+  YTC/YTM 以百分比表示；Offer 為報價（percent of par）；5D% 為近五日價格變動；YTD% 為年初至今殖利率變動。
+</footer>
+
+<script>
+
+const DATA = {
+  short: [["TSMC Arizona(台積電)", "TSMC ARIZONA CORP", "TAISEM", "US872898AH40", "Aa3 / AA- / -", 4.25, "2032/1/22", "2032/4/22", 98.35, 4.6, 4.58, "Sr Unsecured", -0.3, -2.896], ["美國運通", "AMERICAN EXPRESS CO", "AXP", "US025816DU02", "A2 / A- / A", 5.532, "2029/4/25", "2030/4/25", 102.78, 4.41, 4.5, "Sr Unsecured", -0.119, -2.505], ["吉利德科學公司", "GILEAD SCIENCES INC", "GILD", "US375558BZ59", "A2 / - / A", 5.25, "2033/7/15", "2033/10/15", 102.06, 4.89, 4.9, "Sr Unsecured", 0.178, -4.013], ["美光科技公司", "MICRON TECHNOLOGY INC", "MU", "US595112CB74", "Baa1 / BBB+ / BBB+", 5.875, "2033/6/15", "2033/9/15", 103.92, 5.18, 5.2, "Sr Unsecured", 0.084, -3.356], ["可口可樂公司", "COCA-COLA CO/THE", "KO", "US191216CT51", "A1 / A+ / WD", 3.45, "-", "2030/3/25", 97.53, null, 4.2, "Sr Unsecured", -0.065, -1.695], ["華特迪士尼公司", "WALT DISNEY COMPANY/THE", "DIS", "US254687FX90", "A2 / A / WD", 2.65, "-", "2031/1/13", 92.86, null, 4.46, "Sr Unsecured", -0.08, -1.918], ["法國電力股份有限公司", "ELECTRICITE DE FRANCE SA", "EDF", "USF29416AB40", "Baa1 / BBB+ / BBB+", 5.7, "2028/4/23", "2028/5/23", 102.72, 3.99, 4.06, "Sr Unsecured", -0.024, -1.687], ["智遊網集團公司", "EXPEDIA GROUP INC", "EXPE", "US30212PBH73", "Baa2 / BBB / BBB", 2.95, "2030/12/15", "2031/3/15", 92.35, 4.95, 4.84, "Sr Unsecured", 0.023, -1.872], ["3M公司", "3M COMPANY", "MMM", "US88579YBR18", "A3 / BBB+ / A", 5.15, "2034/12/15", "2035/3/15", 100.22, 5.15, 5.12, "Sr Unsecured", -0.175, -3.377], ["高通公司", "QUALCOMM INC", "QCOM", "US747525BP77", "A2 / A / -", 1.65, "2032/2/20", "2032/5/20", 84.69, 4.86, 4.73, "Sr Unsecured", -0.204, -2.136], ["威訊無線電信公司", "VERIZON COMMUNICATIONS", "VZ", "US92343VFE92", "Baa1 / BBB+ / A-", 3.15, "2029/12/22", "2030/3/22", 95.4, 4.66, 4.56, "Sr Unsecured", -0.044, -1.522], ["萬豪國際集團(萬豪酒店)", "MARRIOTT INTERNATIONAL", "MAR", "US571903BQ56", "Baa2 / BBB / -", 5.2, "2034/2/15", "2034/5/15", 100.17, 5.27, 5.29, "Sr Unsecured", 0.192, -4.075], ["菲利浦莫里斯國際公司", "PHILIP MORRIS INTL INC", "PM", "US718172DJ54", "A2 / A / A", 5.3, "2033/11/13", "2034/2/13", 100.8, 5.12, 5.12, "Sr Unsecured", 0.128, -3.653], ["聯合健康集團公司", "UNITEDHEALTH GROUP INC", "UNH", "US91324PFA57", "A2 / A+ / A", 4.9, "2031/2/15", "2031/4/15", 101.06, 4.64, 4.64, "Sr Unsecured", -0.177, -2.684], ["西方中遊經營有限合夥", "WESTERN MIDSTREAM OPERAT", "WES", "US958667AC17", "Baa3 / BBB- / BBB-", 4.05, "2029/11/1", "2030/2/1", 97.71, 4.83, 4.78, "Sr Unsecured", -0.07, -1.398], ["IBM International Capital Pt", "IBM INTERNAT CAPITAL", "IBM", "US449276AE42", "A3 / A- / -", 4.9, "2033/11/5", "2034/2/5", 97.62, 5.3, 5.29, "Sr Unsecured", -0.104, -4.44], ["雅詩蘭黛", "ESTEE LAUDER CO INC", "EL", "US29736RAV24", "A3 / A- / -", 5.0, "2033/11/14", "2034/2/14", 99.29, 5.12, 5.12, "Sr Unsecured", 0.096, -3.376], ["Pfizer Investment Enterprise", "PFIZER INVESTMENT ENTER", "PFE", "US716973AE24", "A2 / A / A1", 4.75, "2033/2/19", "2033/5/19", 98.69, 4.99, 4.98, "Sr Unsecured", 0.146, -3.542], ["BP資本市場美國公司", "BP CAP MARKETS AMERICA", "BPLN", "US10373QBV14", "A2 / A- / A+", 4.893, "2033/6/11", "2033/9/11", 99.44, 4.99, 4.99, "Sr Unsecured", 0.229, -3.395], ["戴爾國際有限責任公司/EMC公司", "DELL LLC / EMC CORP", "DELL", "US24703DBX84", "Baa2 / BBB / BBB+", 5.25, "2036/11/15", "2037/2/15", 97.39, 5.59, 5.03, "Sr Unsecured", 0.029, null], ["嘉能可財政有限公司", "GLENCORE FUNDING LLC", "GLENLN", "USU37818BZ05", "A3 / BBB+ / -", 5.2, "2033/5/1", "2033/7/1", 99.68, 5.26, 5.26, "Sr Unsecured", -0.012, null], ["雀巢控股公司", "NESTLE HOLDINGS INC", "NESNVX", "USU74078CU56", "Aa3 / AA- / -", 4.3, "2032/7/1", "2032/10/1", 98.04, 4.69, 4.67, "Sr Unsecured", -0.34, -3.107], ["新加坡科技工程", "ST ENG URBAN SOL USA", "STESP", "USU8585EAB84", "Aaa / - / -", 3.75, "2031/11/5", "2032/5/5", 95.83, 4.66, 4.59, "Sr Unsecured", -0.249, -2.366], ["達登餐飲公司", "DARDEN RESTAURANTS INC", "DRI", "US237194AN56", "Baa2 / BBB / BBB", 6.3, "2033/7/10", "2033/10/10", 106.17, 5.22, 5.25, "Sr Unsecured", 0.296, -3.395], ["新加坡航空有限公司", "SINGAPORE AIRLINES LTD", "SIASP", "XS2787854673", "- / - / -", 5.25, "2034/1/21", "2034/3/21", 101.1, 5.07, 5.07, "Sr Unsecured", -0.026, -4.554], ["大都會人壽", "METLIFE INC", "MET", "US59156RCE62", "A3 / A- / A-", 5.375, "2033/4/15", "2033/7/15", 102.52, 4.93, 4.94, "Sr Unsecured", 0.07, -3.877], ["中化資本離岸有限公司", "SINOCHEM OFFSHORE CAPITA", "SINOCH", "XS2387368975", "- / BBB+ / A-", 2.375, "2031/6/23", "2031/9/23", 89.56, 4.83, 4.71, "Sr Unsecured", -0.178, -1.351], ["阿里巴巴集團控股有限公司", "ALIBABA GROUP HOLDING", "BABA", "US01609WAR34", "A1 / A+ / A", 4.5, "2034/5/28", "2034/11/28", 96.51, 5.05, 5.02, "Sr Unsecured", -0.022, -3.435], ["中銀租賃", "BOC AVIATION USA CORP", "BOCAVI", "US66980Q2C05", "- / A- / A-", 4.875, "2033/2/3", "2033/5/3", 100.81, 4.73, 4.73, "Sr Unsecured", 0.11, -2.282], ["長江和記工業", "CK HUTCHISON INTL 24", "CKHH", "USG2176UAB64", "A2 / A / A", 5.5, "2034/1/26", "2034/4/26", 102.96, 5.02, 5.03, "Sr Unsecured", 0.067, -2.648], ["領展房地產投資信託子公司", "LINK FINANCE CAYMAN 2009", "LINREI", "XS2417084030", "A2 / A / -", 2.75, "-", "2032/1/19", 91.24, null, 4.6, "Sr Unsecured", -0.103, -1.122], ["太古股份", "SWIRE PACIFIC MTN FIN", "SWIRE", "XS2043949200", "A3 / - / -", 2.875, "2029/10/30", "2030/1/30", 95.62, 4.37, 4.26, "Sr Unsecured", -0.054, -1.242], ["歐力士公司", "ORIX CORP", "ORIX", "US686329AB98", "A3 / BBB+ / A-", 5.4, "-", "2035/2/25", 100.42, null, 5.34, "Sr Unsecured", -0.008, -3.812], ["松下控股公司", "PANASONIC HOLDINGS CORP", "MATSEL", "USJ6355LAD31", "A3 / A- / -", 5.302, "2034/4/16", "2034/7/16", 100.64, 5.2, 5.2, "Sr Unsecured", -0.024, -3.698], ["Mitsubishi HC Finance Ameri", "MITSUBISHI HC FIN AMER", "MITHCC", "USU6S68YAK42", "A3 / A- / -", 5.197, "2031/6/21", "2031/7/21", 100.7, 5.03, 5.03, "Sr Unsecured", -0.168, null], ["三菱商事股份有限公司", "MITSUBISHI CORP", "MITCO", "USJ43830FW33", "A2 / A / -", 4.625, "2031/5/23", "2031/6/23", 99.85, 4.66, 4.66, "Sr Unsecured", -0.234, null], ["梅賽德斯-賓士金融北美有限公司", "MERCEDES-BENZ FIN NA", "MBGGR", "USU5876JAM72", "A2 / A / WD", 5.05, "-", "2033/8/3", 98.95, null, 5.23, "Sr Unsecured", 0.11, -4.292], ["通用汽車金融公司", "GENERAL MOTORS FINL CO", "GM", "US37045XEB82", "Baa2 / BBB / BBB", 6.0, "2027/12/9", "2028/1/9", 102.62, 3.88, 4.0, "Sr Unsecured", -0.129, -1.718], ["韓國電力", "KOREA ELECTRIC POWER", "KORELE", "USY48406BA27", "Aa2 / AA- / AA-", 5.125, "-", "2034/4/23", 101.6, null, 4.87, "Sr Unsecured", 0.019, -3.163], ["LG化學有限公司", "LG CHEM LTD", "LGCHM", "USY52758AD47", "Baa2 / BBB+ / -", 3.625, "-", "2029/4/15", 97.36, null, 4.7, "Sr Unsecured", -0.151, -1.379], ["愛思開海力士公司", "SK HYNIX INC", "HYUELE", "USY8085FBD16", "A3 / A- / BBB+", 2.375, "-", "2031/1/19", 90.72, null, 4.74, "Sr Unsecured", -0.273, -1.264], ["信實工業有限公司", "RELIANCE INDUSTRIES LTD", "RILIN", "USY72570AS69", "Baa1 / A- / -", 2.875, "-", "2032/1/12", 90.41, null, 4.92, "Sr Unsecured", -0.111, -2.118], ["印度石油天然氣有限公司", "OIL & NATURAL GAS CORP L", "ONGCIN", "XS2087717364", "Baa3 / BBB- / BBB-", 3.375, "-", "2029/12/5", 96.17, null, 4.65, "Sr Unsecured", -0.167, -1.063], ["印尼Asahan鋁業", "INDO ASAHAN/MINERAL IND", "IDASAL", "USY7140WAC20", "Baa2 / - / BBB", 6.53, "-", "2028/11/15", 104.03, null, 4.6, "Sr Unsecured", -0.099, -2.816]],
+  long: [["TSMC Arizona(台積電)", "TSMC ARIZONA CORP", "TAISEM", "US872898AD36", "Aa3 / AA- / -", 3.125, "2041/10/25", "2041/4/25", 79.02, 5.19, 5.13, "Sr Unsecured", -0.077, -3.522, 11.56], ["亞馬遜公司", "AMAZON.COM INC", "AMZN", "US023135BJ40", "A1 / AA / AA-", 4.05, "2047/8/22", "2047/2/22", 75.75, 6.15, 6.12, "Sr Unsecured", 1.057, -9.306, 13.14], ["蘋果公司", "APPLE INC", "AAPL", "US037833EA41", "Aaa / AA+ / -", 2.55, "2060/8/20", "2060/2/20", 51.69, 5.86, 5.83, "Sr Unsecured", 1.163, -9.48, 17.85], ["華特迪士尼公司", "WALT DISNEY COMPANY/THE", "DIS", "US254687FZ49", "A2 / A / WD", 3.6, "2051/1/13", "2050/7/13", 70.73, 5.9, 5.87, "Sr Unsecured", 1.226, -6.525, 14.57], ["Alphabet公司", "ALPHABET INC", "GOOGL", "US02079KAG22", "Aa2 / AA+ / -", 2.25, "2060/8/15", "2060/2/15", 46.83, 5.92, 5.89, "Sr Unsecured", 0.993, -10.903, 18.3], ["微軟公司", "MICROSOFT CORP", "MSFT", "US594918CE21", "Aaa / AAA / WD", 2.921, "2052/3/17", "2051/9/17", 61.04, 5.92, 5.89, "Sr Unsecured", 1.324, -8.905, 15.35], ["波克夏海瑟威金融公司", "BERKSHIRE HATHAWAY FIN", "BRK", "US084664CR08", "Aa2 / AA / A+u", 4.25, "2049/1/15", "2048/7/15", 79.36, 5.95, 5.93, "Sr Unsecured", 1.233, -6.991, 13.47], ["甲骨文公司", "ORACLE CORP", "ORCL", "US68389XCA19", "Baa2 / BBB- / BBB", 3.95, "2051/3/25", "2050/9/25", 61.02, 7.46, 7.42, "Sr Unsecured", -0.592, -9.136, 12.84], ["應用材料公司", "APPLIED MATERIALS INC", "AMAT", "US038222AP03", "A2 / A / -", 2.75, "2050/6/1", "2049/12/1", 61.14, 5.82, 5.78, "Sr Unsecured", 1.152, -6.587, 15.3], ["德州儀器公司", "TEXAS INSTRUMENTS INC", "TXN", "US882508BQ64", "Aa3 / A+ / -", 4.1, "2052/8/16", "2052/2/16", 75.97, 5.94, 5.92, "Sr Unsecured", 0.746, -6.137, 14.56], ["達登餐飲公司", "DARDEN RESTAURANTS INC", "DRI", "US237194AM73", "Baa2 / BBB / BBB", 4.55, "2048/2/15", "2047/8/15", 80.52, 6.23, 6.2, "Sr Unsecured", 1.196, -3.23, 12.89], ["可口可樂公司", "COCA-COLA CO/THE", "KO", "US191216DL17", "A1 / A+ / WD", 3.0, "2051/3/5", "-", 64.01, null, 5.76, "Sr Unsecured", 1.24, -5.943, 15.07], ["星巴克", "STARBUCKS CORP", "SBUX", "US855244BA67", "Baa1 / BBB+ / WD", 3.5, "2050/11/15", "2050/5/15", 67.98, 6.06, 6.03, "Sr Unsecured", 1.49, -4.786, 14.38], ["耐吉公司", "NIKE INC", "NKE", "US654106AM50", "A2 / A+ / -", 3.375, "2050/3/27", "2049/9/27", 68.16, 5.92, 5.89, "Sr Unsecured", 1.189, -6.543, 14.34], ["波音公司", "BOEING CO", "BA", "US097023CW33", "Baa3 / BBB- / BBB-", 5.805, "2050/5/1", "2049/11/1", 95.23, 6.19, 6.19, "Sr Unsecured", 0.735, -4.555, 12.59], ["Meta平台公司", "META PLATFORMS INC", "META", "US30303M8J41", "Aa3 / AA- / -", 4.45, "2052/8/15", "2052/2/15", 71.87, 6.79, 6.76, "Sr Unsecured", -0.322, -13.272, 13.58], ["威士卡", "VISA INC", "V", "US92826CAQ50", "Aa3 / AA- / -", 2.0, "2050/8/15", "2050/2/15", 52.36, 5.71, 5.65, "Sr Unsecured", 1.412, -5.605, 16.73], ["萬事達卡", "MASTERCARD INC", "MA", "US57636QAQ73", "Aa3 / A+ / -", 3.85, "2050/3/26", "2049/9/26", 75.27, 5.81, 5.78, "Sr Unsecured", 1.303, -5.6, 13.99], ["賽門房地產集團有限合夥", "SIMON PROPERTY GROUP LP", "SPG", "US828807DJ39", "A3 / A / WD", 3.8, "2050/7/15", "2050/1/15", 72.94, 5.96, 5.93, "Sr Unsecured", 1.286, -4.661, 14.22], ["美光科技公司", "MICRON TECHNOLOGY INC", "MU", "US595112BU64", "Baa1 / BBB+ / BBB+", 3.477, "2051/11/1", "2051/5/1", 67.88, 5.98, 5.95, "Sr Unsecured", 1.413, -5.118, 14.67], ["超微半導體公司", "ADVANCED MICRO DEVICES", "AMD", "US007903BG12", "A1 / A- / -", 4.393, "2052/6/1", "2051/12/1", 78.19, 6.1, 6.08, "Sr Unsecured", 1.265, -9.06, 14.0], ["輝達公司", "NVIDIA CORP", "NVDA", "US67066GAH74", "Aa1 / AA / WD", 3.5, "2050/4/1", "2049/10/1", 67.95, 6.11, 6.07, "Sr Unsecured", 1.053, -10.004, 14.09], ["高通公司", "QUALCOMM INC", "QCOM", "US747525BR34", "A2 / A / -", 4.5, "2052/5/20", "2051/11/20", 79.17, 6.13, 6.12, "Sr Unsecured", 1.023, -8.017, 13.87], ["英特爾公司", "INTEL CORP", "INTC", "US458140CB48", "Baa2 / BBB / BBB", 4.9, "2052/8/5", "2052/2/5", 80.22, 6.5, 6.48, "Sr Unsecured", 0.263, -4.592, 13.51], ["自由港麥克莫蘭銅金公司", "FREEPORT-MCMORAN INC", "FCX", "US35671DBC83", "Baa2 / BBB- / BBB", 5.45, "2043/3/15", "2042/9/15", 94.93, 5.94, 5.93, "Sr Unsecured", 1.212, -3.353, 10.64], ["寶僑公司", "PROCTER & GAMBLE CO/THE", "PG", "US742718FK01", "Aa3 / AA- / -", 3.6, "2050/3/25", "-", 75.1, null, 5.5, "Sr Unsecured", 1.046, -3.232, 14.42], ["卡夫亨氏食品公司", "KRAFT HEINZ FOODS CO", "KHC", "US50077LAB27", "Baa2 *- / BBB / BBB", 4.375, "2046/6/1", "2045/12/1", 78.53, 6.32, 6.29, "Sr Unsecured", 1.053, -6.494, 12.3], ["聯合健康集團公司", "UNITEDHEALTH GROUP INC", "UNH", "US91324PEK49", "A2 / A+ / A", 4.75, "2052/5/15", "2051/11/15", 82.96, 6.08, 6.07, "Sr Unsecured", 0.988, -5.455, 13.73], ["嬌生公司", "JOHNSON & JOHNSON", "JNJ", "US478160CS18", "Aaa / AAA / -", 2.25, "2050/9/1", "2050/3/1", 56.04, 5.65, 5.6, "Sr Unsecured", 1.393, -7.086, 16.06], ["埃克森美孚公司", "EXXON MOBIL CORPORATION", "XOM", "US30231GBM33", "Aa2 / AA- / -", 3.452, "2051/4/15", "2050/10/15", 69.29, 5.84, 5.81, "Sr Unsecured", 1.48, -5.295, 14.65], ["雪佛龍公司", "CHEVRON CORP", "CVX", "US166764CA68", "Aa2 / AA- / -", 3.078, "2051/5/11", "2049/11/11", 65.19, 5.83, 5.8, "Sr Unsecured", 1.203, -5.907, 14.84], ["家得寶公司", "HOME DEPOT INC", "HD", "US437076CT73", "A2 / A / A", 4.95, "2052/9/15", "2052/3/15", 87.09, 5.94, 5.93, "Sr Unsecured", 1.057, -6.234, 13.67], ["輝瑞大藥廠股份有限公司", "PFIZER INC", "PFE", "US717081FA61", "A2 / A / WD", 2.7, "2050/5/28", "2049/11/28", 59.89, 5.89, 5.84, "Sr Unsecured", 1.383, -5.977, 15.31], ["艾伯維公司", "ABBVIE INC", "ABBV", "US00287YCB39", "A2 / A- / -", 4.25, "2049/11/21", "2049/5/21", 79.02, 5.94, 5.92, "Sr Unsecured", 1.235, -5.671, 13.6], ["沃爾瑪公司", "WALMART INC", "WMT", "US931142EZ26", "Aa2 / AA / AA", 4.5, "2052/9/9", "2052/3/9", 83.73, 5.72, 5.71, "Sr Unsecured", 1.084, -6.424, 14.14], ["陶氏化學公司", "DOW CHEMICAL CO/THE", "DOW", "US260543DH36", "Baa3 / BBB- / BBB", 6.9, "2053/5/15", "2052/11/15", 104.83, 6.51, 6.51, "Sr Unsecured", 1.447, 0.916, 12.47], ["信諾集團", "CIGNA GROUP/THE", "CI", "US125523AK66", "Baa1 / A- / BBB+", 4.9, "2048/12/15", "2048/6/15", 85.29, 6.13, 6.12, "Sr Unsecured", 0.94, -5.63, 12.85], ["3M公司", "3M COMPANY", "MMM", "US88579YBK64", "A3 / BBB+ / A-", 3.25, "2049/8/26", "2049/2/26", 66.68, 5.96, 5.92, "Sr Unsecured", 1.29, -4.78, 14.21], ["CVS保健公司", "CVS HEALTH CORP", "CVS", "US126650CZ11", "Baa3 / BBB / BBB", 5.05, "2048/3/25", "2047/9/25", 85.74, 6.28, 6.26, "Sr Unsecured", 1.15, -4.17, 12.32], ["博通公司", "BROADCOM INC", "AVGO", "USU1109MAT37", "A3 / A- / A-", 3.5, "2041/2/15", "2040/8/15", 75.24, 6.17, 6.1, "Sr Unsecured", -0.49, -9.08, 10.87], ["Saudi Government Internation", "SAUDI INTERNATIONAL BOND", "KSA", "XS2577136109", "Aa3 / - / A+", 5.0, "2053/1/18", "-", 83.67, null, 6.27, "Sr Unsecured", 0.52, -7.37, 13.67], ["沙烏地阿拉伯國家石油公司", "SAUDI ARABIAN OIL CO", "ARAMCO", "XS1982113463", "Aa3 / - / A+", 4.25, "2039/4/16", "-", 86.94, null, 5.71, "Sr Unsecured", -0.53, -5.56, 9.48]],
+  fin: [["美國銀行", "BANK OF AMERICA CORP", "BAC", "US06051GMA49", "A1 / A- / AA-", 5.468, "SOFRRATE+1.65%", "2035/1/23", "2034/1/23", 101.45, 5.23, 5.24, "TLAC", 0.188, -3.716, "USD"], ["美國銀行", "BANK OF AMERICA CORP", "BAC", "US06051GMD87", "A3 / BBB+ / A", 5.518, "SOFRRATE+1.738%", "2035/10/25", "2034/10/25", 99.75, 5.55, 5.54, "Tier2 TLAC", -0.021, -3.774, "USD"], ["花旗集團公司", "CITIGROUP INC", "C", "US172967PL97", "A3 / BBB+ / A", 5.449, "SOFRRATE+1.447%", "2035/6/11", "2034/6/11", 100.94, 5.3, 5.28, "TLAC", 0.099, -3.538, "USD"], ["摩根大通銀行", "JPMORGAN CHASE & CO", "JPM", "US46647PDK93", "A2 / A- / A", 5.717, "SOFRRATE+2.58%", "2033/9/14", "2032/9/14", 102.94, 5.15, 5.28, "Tier2 TLAC", -0.235, -3.854, "USD"], ["摩根大通銀行", "JPMORGAN CHASE & CO", "JPM", "US46647PEK84", "A1 / A / AA-", 5.294, "SOFRRATE+1.46%", "2035/7/22", "2034/7/22", 100.31, 5.24, 5.28, "TLAC", 0.119, -3.934, "USD"], ["富國銀行", "WELLS FARGO & COMPANY", "WFC", "US95000U3N13", "A1 / BBB+ / A+", 5.211, "SOFRRATE+1.38%", "2035/12/3", "2034/12/3", 99.24, 5.32, 5.3, "TLAC", 0.275, -4.031, "USD"], ["富國銀行", "WELLS FARGO & COMPANY", "WFC", "US95000U3K73", "A1 / BBB+ / A+", 5.499, "SOFRRATE+1.78%", "2035/1/23", "2034/1/23", 101.45, 5.26, 5.28, "TLAC", 0.214, -3.854, "USD"], ["摩根士丹利", "MORGAN STANLEY", "MS", "US61747YFM21", "Baa1 / BBB+ / A-", 5.942, "H15T5Y+1.8%", "2039/2/7", "2034/2/7", 101.79, 5.64, 5.82, "Tier2 TLAC", 0.066, -4.289, "USD"], ["匯豐控股有限公司", "HSBC HOLDINGS PLC", "HSBC", "US404280DH94", "A3 / A- / A+", 5.402, "SOFRRATE+2.87%", "2033/8/11", "2032/8/11", 101.19, 5.17, 5.34, "TLAC", -0.041, -3.463, "USD"], ["匯豐控股有限公司", "HSBC HOLDINGS PLC", "HSBC", "US404280DC08", "Baa1 / BBB+ / A-", 4.762, "SOFRRATE+2.53%", "2033/3/29", "2032/3/29", 97.42, 5.3, 5.42, "Tier2 TLAC", -0.107, -3.161, "USD"], ["匯豐控股有限公司", "HSBC HOLDINGS PLC", "HSBC", "US404280EE54", "A3 / A- / A+", 5.719, "SOFRRATE+1.78%", "2035/3/4", "2034/3/4", 101.76, 5.43, 5.43, "TLAC", 0.163, -4.621, "USD"], ["巴克萊集團", "BARCLAYS PLC", "BACR", "US06738ECA10", "Baa1 / BBB+ / A", 5.746, "H15T1Y+3%", "2033/8/9", "2032/8/9", 102.53, 5.24, 5.46, "TLAC", -0.249, -3.452, "USD"], ["巴克萊集團", "BARCLAYS PLC", "BACR", "US06738ECL74", "Baa1 / BBB+ / A", 6.692, "SOFRRATE+2.62%", "2034/9/13", "2033/9/13", 107.26, 5.44, 5.52, "TLAC", 0.095, -4.237, "USD"], ["法國巴黎銀行股份有限公司", "BNP PARIBAS", "BNP", "US09659X2W15", "Baa1 / A- / A+", 5.738, "SOFRRATE+1.88%", "2035/2/20", "2034/2/20", 102.37, 5.35, 5.37, "TLAC", 0.134, -3.699, "USD"], ["法國農業信貸銀行", "CREDIT AGRICOLE SA", "ACAFP", "USF2R125Q730", "Baa1 / BBB+ / A-", 6.251, "SOFRRATE+2.67%", "2035/1/10", "2034/1/10", 103.05, 5.74, 5.8, "Tier2 TLAC", 0.086, -4.066, "USD"], ["西班牙國際銀行", "BANCO SANTANDER SA", "SANTAN", "US05971KAG40", "Baa2 / BBB+ / BBB+", 2.749, "-", "2030/12/3", "-", 91.33, null, 5.03, "Tier2 TLAC", -0.186, -0.968, "USD"], ["渣打集團有限公司", "STANDARD CHARTERED PLC", "STANLN", "XS1793294841", "Baa2 / BBB / BBB+", 4.866, "USISDA05+1.97%", "2033/3/15", "2028/3/15", 100.55, 4.5, 5.72, "Tier2 TLAC", -0.112, -1.022, "USD"], ["渣打集團有限公司", "STANDARD CHARTERED PLC", "STANLN", "USG84228FV59", "A3 / BBB+ / A", 6.296, "H15T1Y+2.58%", "2033/7/6", "2033/7/6", 105.32, 5.36, 5.49, "TLAC", -0.06, -3.675, "USD"], ["渣打集團有限公司", "STANDARD CHARTERED PLC", "STANLN", "XS2358287824", "A3 / BBB+ / A", 2.678, "H15T1Y+1.2%", "2032/6/29", "2031/6/29", 89.94, 5.05, 5.08, "TLAC", -0.176, -1.728, "USD"], ["瑞銀集團公司", "UBS GROUP AG", "UBS", "USH42097EU71", "A2 / A- / A+", 5.699, "H15T1Y+1.77%", "2035/2/8", "2034/2/8", 101.91, 5.38, 5.42, "TLAC", 0.069, -4.212, "USD"], ["三井住友金融集團公司", "SUMITOMO MITSUI FINL GRP", "SUMIBK", "US86562MDU18", "A1 / A- / A-", 5.632, "-", "2035/1/15", "-", 101.99, null, 5.33, "TLAC", -0.044, -4.87, "USD"], ["瑞穗金融集團", "MIZUHO FINANCIAL GROUP", "MIZUHO", "US60687YDJ55", "A1 / A- / -", 5.422, "H15T1Y+0.98%", "2036/5/13", "2035/5/13", 100.01, 5.42, 5.38, "TLAC", 0.074, -4.585, "USD"], ["三菱UFJ金融集團公司", "MITSUBISHI UFJ FIN GRP", "MUFG", "US606822DC52", "A1 / A- / A-", 5.406, "H15T1Y+1.97%", "2034/4/19", "2033/4/19", 101.33, 5.17, 5.26, "TLAC", -0.004, -4.157, "USD"], ["東亞銀行有限公司", "BANK OF EAST ASIA LTD", "BNKEA", "XS2813323685", "Baa3 / BBB- / -", 6.75, "H15T5Y+2.55%", "2034/6/27", "2029/6/27", 104.3, 5.1, 6.17, "Tier2 TLAC", -0.214, -1.421, "USD"], ["長谷銀行有限公司/香港", "BANGKOK BANK PCL/HK", "BBLTF", "USY0606WCA63", "Baa3 / - / BBB", 3.733, "H15T5Y+1.9%", "2034/9/25", "2029/9/25", 95.92, 5.18, 5.82, "Tier2 TLAC", -0.26, -0.067, "USD"], ["多倫多道明銀行", "TORONTO-DOMINION BANK", "TD", "US89115A2E11", "A2 / A- / AA-", 4.456, "-", "2032/6/8", "-", 98.16, null, 4.82, "TLAC", -0.029, -2.888, "USD"], ["澳盛銀行集團股份有限公司", "AUST & NZ BANKING GROUP", "ANZ", "USQ0954PVM14", "A3 / A- / A-", 6.742, "-", "2032/12/8", "-", 107.66, null, 5.29, "Tier2 TLAC", -0.19, -3.525, "USD"], ["麥格理集團有限公司", "MACQUARIE GROUP LTD", "MQGAU", "US55608KBQ76", "A1 / BBB+ / A", 6.255, "SOFRRATE+2.303%", "2034/12/7", "2033/12/7", 105.46, 5.4, 5.34, "TLAC", 0.032, -4.139, "USD"], ["野村控股公司", "NOMURA HOLDINGS INC", "NOMURA", "US65535HCB33", "Baa1 / BBB+ / -", 5.491, "-", "2035/6/29", "-", 100.8, null, 5.38, "TLAC", 0.12, -3.371, "USD"], ["三井住友信託銀行有限公司", "SUMITOMO MITSUI TR BK LT", "SUMITR", "USJ7771YSY43", "A1 / A / -", 5.35, "-", "2034/3/7", "-", 101.0, null, 5.19, "Sr Unsecured", -0.073, -3.999, "USD"], ["韓國輸出入銀行", "EXPORT-IMPORT BANK KOREA", "EIBKOR", "US302154DW60", "Aa2 / AA / AA-", 5.125, "-", "2033/1/11", "-", 102.75, null, 4.62, "Sr Unsecured", 0.038, -2.999, "USD"], ["南洋商業銀行", "NANYANG COMMERCIAL BANK", "NANYAN", "XS2842544491", "Baa2 / - / -", 6.0, "H15T5Y+2.1%", "2034/8/6", "2029/8/6", 103.13, 4.85, 5.8, "Tier2 TLAC", -0.16, -1.225, "USD"], ["法國興業銀行股份有限公司", "SOCIETE GENERALE", "SOCGEN", "US83368TBY38", "Baa3 / BBB- / BBB", 7.132, "H15T1Y+2.95%", "2055/1/19", "2054/1/19", 100.57, 7.08, 7.08, "Tier2 TLAC", 0.24, -5.336, "USD"], ["匯豐控股有限公司", "HSBC HOLDINGS PLC", "HSBC", "US404280EL97", "Baa1 / BBB+ / A-", 5.874, "SOFRRATE+1.9%", "2035/11/18", "2034/11/18", 101.03, 5.71, 5.7, "Tier2 TLAC", 0.13, -4.326, "USD"], ["匯豐控股有限公司", "HSBC HOLDINGS PLC", "HSBC", "US404280ES41", "A3 / A- / A+", 5.45, "SOFRRATE+1.56%", "2036/3/3", "2035/3/3", 99.56, 5.52, 5.49, "TLAC", 0.05, -4.674, "USD"], ["瑞銀集團公司", "UBS GROUP AG", "UBS", "US42097FD48", "A2 / A- / A+", 5.58, "H15T1Y+1.76%", "2036/5/9", "2035/5/9", 100.82, 5.46, 5.46, "TLAC", 0.14, -4.167, "USD"], ["渣打集團有限公司", "STANDARD CHARTERED PLC", "STANLN", "XS3068732455", "A3 / BBB+ / A", 5.244, "H15T1Y+1.35%", "2031/5/13", "2030/5/13", 101.54, 4.78, 4.9, "Tier2 TLAC", -0.12, -2.426, "USD"], ["花旗集團公司", "CITIGROUP INC", "C", "US172967QA24", "A3 / BBB+ / A", 4.952, "SOFRRATE+1.463%", "2031/5/7", "2030/5/7", 100.67, 4.75, 4.83, "TLAC", -0.15, -2.454, "USD"], ["摩根大通銀行", "JPMORGAN CHASE & CO", "JPM", "US46647PER38", "A1 / A / AA-", 4.946, "SOFRRATE+1.34%", "2035/10/22", "2034/10/22", 98.03, 5.25, 5.23, "TLAC", 0.24, -4.093, "USD"], ["法國巴黎銀行股份有限公司", "BNP PARIBAS", "BNP", "US09660V2D44", "Baa2 / BBB+ / A", 5.906, "SOFRRATE+1.92%", "2035/11/19", "2034/11/19", 101.25, 5.71, 5.7, "TLAC", 0.04, -3.638, "USD"], ["東泰壽險", "TONGYANGLIFEINSURANCECO", "TYANLI", "XS3045733840", "Baa2 / - / BBB", 6.25, "H15T5Y+2.4%", "2035/5/7", "2030/5/7", 103.42, 5.22, 6.02, "非累積次順位", -0.14, -1.325, "USD"]]
+};
+
+</script>
+<script>
+const SCHEMAS = {
+  short: {
+    label: '短年期 IG 債券',
+    cols: [
+      {k:'issuer_cn', h:'發行人', type:'issuer'},
+      {k:'issuer_en', h:'', type:'issuer_en', hideHeader:true},
+      {k:'ticker', h:'代碼', type:'ticker'},
+      {k:'isin', h:'ISIN', type:'isin'},
+      {k:'rating', h:"Moody's/S&P/Fitch", type:'rating'},
+      {k:'coupon', h:'票息%', type:'num'},
+      {k:'call', h:'贖回日', type:'date'},
+      {k:'maturity', h:'到期日', type:'date'},
+      {k:'offer', h:'Offer%', type:'num'},
+      {k:'ytc', h:'YTC%', type:'num'},
+      {k:'ytm', h:'YTM%', type:'num'},
+      {k:'rank', h:'順位', type:'rank'},
+      {k:'d5', h:'5D%', type:'signed'},
+      {k:'ytd', h:'YTD%', type:'signed'},
+    ]
+  },
+  long: {
+    label: '長年期 IG 債券',
+    cols: [
+      {k:'issuer_cn', h:'發行人', type:'issuer'},
+      {k:'issuer_en', h:'', type:'issuer_en', hideHeader:true},
+      {k:'ticker', h:'代碼', type:'ticker'},
+      {k:'isin', h:'ISIN', type:'isin'},
+      {k:'rating', h:"Moody's/S&P/Fitch", type:'rating'},
+      {k:'coupon', h:'票息%', type:'num'},
+      {k:'maturity', h:'到期日', type:'date'},
+      {k:'call', h:'贖回日', type:'date'},
+      {k:'offer', h:'Offer%', type:'num'},
+      {k:'ytc', h:'YTC%', type:'num'},
+      {k:'ytm', h:'YTM%', type:'num'},
+      {k:'rank', h:'順位', type:'rank'},
+      {k:'d5', h:'5D%', type:'signed'},
+      {k:'ytd', h:'YTD%', type:'signed'},
+      {k:'duration', h:'存續期', type:'num'},
+    ]
+  },
+  fin: {
+    label: '金融債券',
+    cols: [
+      {k:'issuer_cn', h:'發行人', type:'issuer'},
+      {k:'issuer_en', h:'', type:'issuer_en', hideHeader:true},
+      {k:'ticker', h:'代碼', type:'ticker'},
+      {k:'isin', h:'ISIN', type:'isin'},
+      {k:'rating', h:"Moody's/S&P/Fitch", type:'rating'},
+      {k:'coupon', h:'票息%', type:'num'},
+      {k:'reset', h:'Coupon Reset', type:'text'},
+      {k:'maturity', h:'到期日', type:'date'},
+      {k:'call', h:'贖回日', type:'date'},
+      {k:'offer', h:'Offer%', type:'num'},
+      {k:'ytc', h:'YTC%', type:'num'},
+      {k:'ytm', h:'YTM%', type:'num'},
+      {k:'rank', h:'順位', type:'rank'},
+      {k:'d5', h:'5D%', type:'signed'},
+      {k:'ytd', h:'YTD%', type:'signed'},
+      {k:'currency', h:'幣別', type:'currency'},
+    ]
+  }
+};
+
+// map raw arrays -> row objects per tab
+function mapRow(tab, arr){
+  if(tab === 'short'){
+    return {issuer_cn:arr[0],issuer_en:arr[1],ticker:arr[2],isin:arr[3],rating:arr[4],coupon:arr[5],call:arr[6],maturity:arr[7],offer:arr[8],ytc:arr[9],ytm:arr[10],rank:arr[11],d5:arr[12],ytd:arr[13]};
+  }
+  if(tab === 'long'){
+    return {issuer_cn:arr[0],issuer_en:arr[1],ticker:arr[2],isin:arr[3],rating:arr[4],coupon:arr[5],maturity:arr[6],call:arr[7],offer:arr[8],ytc:arr[9],ytm:arr[10],rank:arr[11],d5:arr[12],ytd:arr[13],duration:arr[14]};
+  }
+  if(tab === 'fin'){
+    return {issuer_cn:arr[0],issuer_en:arr[1],ticker:arr[2],isin:arr[3],rating:arr[4],coupon:arr[5],reset:arr[6],maturity:arr[7],call:arr[8],offer:arr[9],ytc:arr[10],ytm:arr[11],rank:arr[12],d5:arr[13],ytd:arr[14],currency:arr[15]};
+  }
+}
+
+const ROWS = {
+  short: DATA.short.map(r => mapRow('short', r)),
+  long: DATA.long.map(r => mapRow('long', r)),
+  fin: DATA.fin.map(r => mapRow('fin', r)),
+};
+
+let state = { tab:'short', sortKey:null, sortDir:1, query:'', rankFilter:null };
+
+function fmtNum(v, decimals=2){
+  if(v===null||v===undefined||v==='-') return '<span class="dim">–</span>';
+  return Number(v).toFixed(decimals);
+}
+function fmtSigned(v){
+  if(v===null||v===undefined) return '<span class="dim">–</span>';
+  const n = Number(v);
+  const cls = n>0 ? 'pos' : (n<0 ? 'neg' : 'dim');
+  const sign = n>0 ? '+' : '';
+  return `<span class="${cls}">${sign}${n.toFixed(3)}</span>`;
+}
+function fmtRank(v){
+  if(!v) return '<span class="dim">–</span>';
+  const cls = v.toLowerCase().includes('tier2') ? 'tier2' : (v.toLowerCase().includes('tlac') ? 'tlac' : '');
+  return `<span class="rank-badge ${cls}">${v}</span>`;
+}
+
+function renderHead(){
+  const schema = SCHEMAS[state.tab];
+  const thead = document.getElementById('tableHead');
+  let html = '<tr>';
+  schema.cols.forEach(c=>{
+    if(c.hideHeader){ html += `<th style="min-width:150px;">${c.h}</th>`; return; }
+    const numLike = ['num','signed'].includes(c.type);
+    let arrow = '';
+    if(state.sortKey === c.k){
+      arrow = `<span class="arrow">${state.sortDir===1?'▲':'▼'}</span>`;
+    }
+    html += `<th data-key="${c.k}" class="${numLike?'num':''}">${c.h}${arrow}</th>`;
+  });
+  html += '</tr>';
+  thead.innerHTML = html;
+  thead.querySelectorAll('th[data-key]').forEach(th=>{
+    th.addEventListener('click', ()=>{
+      const key = th.getAttribute('data-key');
+      if(state.sortKey === key){ state.sortDir *= -1; }
+      else { state.sortKey = key; state.sortDir = 1; }
+      render();
+    });
+  });
+}
+
+function getFiltered(){
+  const schema = SCHEMAS[state.tab];
+  let rows = ROWS[state.tab].slice();
+  if(state.query){
+    const q = state.query.toLowerCase();
+    rows = rows.filter(r =>
+      (r.issuer_cn||'').toLowerCase().includes(q) ||
+      (r.issuer_en||'').toLowerCase().includes(q) ||
+      (r.ticker||'').toLowerCase().includes(q) ||
+      (r.isin||'').toLowerCase().includes(q) ||
+      (r.rating||'').toLowerCase().includes(q)
+    );
+  }
+  if(state.rankFilter){
+    rows = rows.filter(r => (r.rank||'').toLowerCase().includes(state.rankFilter.toLowerCase()));
+  }
+  if(state.sortKey){
+    rows.sort((a,b)=>{
+      let av = a[state.sortKey], bv = b[state.sortKey];
+      const col = schema.cols.find(c=>c.k===state.sortKey);
+      const isNum = col && (col.type==='num'||col.type==='signed');
+      if(isNum){
+        av = (av===null||av===undefined||av==='-') ? -Infinity : Number(av);
+        bv = (bv===null||bv===undefined||bv==='-') ? -Infinity : Number(bv);
+        return (av-bv) * state.sortDir;
+      } else {
+        av = (av||'').toString(); bv = (bv||'').toString();
+        return av.localeCompare(bv) * state.sortDir;
+      }
+    });
+  }
+  return rows;
+}
+
+function renderBody(){
+  const schema = SCHEMAS[state.tab];
+  const rows = getFiltered();
+  const tbody = document.getElementById('tableBody');
+  const empty = document.getElementById('emptyState');
+  document.getElementById('rowCount').textContent = rows.length;
+  document.getElementById('totalCount').textContent = ROWS[state.tab].length;
+
+  if(rows.length === 0){
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  let html = '';
+  rows.forEach(r=>{
+    html += '<tr>';
+    schema.cols.forEach(c=>{
+      const v = r[c.k];
+      switch(c.type){
+        case 'issuer': html += `<td class="issuer-cn">${v}</td>`; break;
+        case 'issuer_en': html += `<td class="issuer-en">${v}</td>`; break;
+        case 'ticker': html += `<td class="ticker">${v}</td>`; break;
+        case 'isin': html += `<td class="isin">${v}</td>`; break;
+        case 'rating': html += `<td class="rating">${v}</td>`; break;
+        case 'num': html += `<td class="num mono">${fmtNum(v, c.k==='duration'?2:3)}</td>`; break;
+        case 'signed': html += `<td class="num mono">${fmtSigned(v)}</td>`; break;
+        case 'date': html += `<td class="mono ${v==='-'?'dim':''}">${v==='-'? '–' : v}</td>`; break;
+        case 'rank': html += `<td>${fmtRank(v)}</td>`; break;
+        case 'text': html += `<td class="mono dim">${v && v!=='-' ? v : '–'}</td>`; break;
+        case 'currency': html += `<td class="currency">${v}</td>`; break;
+        default: html += `<td>${v}</td>`;
+      }
+    });
+    html += '</tr>';
+  });
+  tbody.innerHTML = html;
+}
+
+function renderRankChips(){
+  const wrap = document.getElementById('rankChips');
+  const ranks = Array.from(new Set(ROWS[state.tab].map(r=>r.rank).filter(Boolean)));
+  let html = `<div class="chip ${!state.rankFilter?'active':''}" data-rank="">全部順位</div>`;
+  ranks.forEach(r=>{
+    html += `<div class="chip ${state.rankFilter===r?'active':''}" data-rank="${r}">${r}</div>`;
+  });
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('.chip').forEach(ch=>{
+    ch.addEventListener('click', ()=>{
+      state.rankFilter = ch.getAttribute('data-rank') || null;
+      render();
+    });
+  });
+}
+
+function updateTabCounts(){
+  document.querySelectorAll('.tab').forEach(t=>{
+    const tab = t.getAttribute('data-tab');
+    t.querySelector('.count').textContent = `(${ROWS[tab].length})`;
+  });
+}
+
+function render(){
+  renderHead();
+  renderRankChips();
+  renderBody();
+}
+
+document.getElementById('tabs').addEventListener('click', (e)=>{
+  const tabEl = e.target.closest('.tab');
+  if(!tabEl) return;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  tabEl.classList.add('active');
+  state.tab = tabEl.getAttribute('data-tab');
+  state.sortKey = null; state.sortDir = 1; state.rankFilter = null;
+  document.getElementById('searchInput').value = '';
+  state.query = '';
+  render();
+});
+
+document.getElementById('searchInput').addEventListener('input', (e)=>{
+  state.query = e.target.value;
+  render();
+});
+
+updateTabCounts();
+render();
+</script>
+</body>
+</html>
