@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>Power Automate Flow 清理作業</title>
+<style>
+  body {
+    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+    max-width: 860px;
+    margin: 40px auto;
+    padding: 0 24px;
+    color: #1b1b1b;
+    line-height: 1.7;
+  }
+  h1 { color: #2F5496; text-align: center; margin-bottom: 4px; font-size: 28px; }
+  .subtitle { text-align: center; color: #5a5a5a; margin-bottom: 36px; font-size: 15px; }
+  h2 { color: #2F5496; border-bottom: 2px solid #dbe4f3; padding-bottom: 6px; margin-top: 40px; }
+  p { margin: 10px 0; }
+  pre {
+    background: #f2f2f2;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    padding: 10px 14px;
+    overflow-x: auto;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13.5px;
+    margin: 10px 0 20px 0;
+  }
+  ul { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-family: Consolas, monospace; font-size: 13.5px; }
+  th, td { border: 1px solid #ccc; padding: 8px 10px; text-align: left; }
+  th { background: #2F5496; color: #fff; }
+  tr:nth-child(even) { background: #f7f9fc; }
+  .note { background: #fff8e6; border-left: 4px solid #e0a800; padding: 10px 16px; margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<h1>Power Automate Flow 清理作業</h1>
+<div class="subtitle">依 Creator Object ID 篩選、盤點與後續清理規劃</div>
+
+<h2>背景</h2>
+<p>透過測試用的 Flow「<code>HTTP_JudyTest_Important_NotDelete</code>」，成功取得建立者的 Object ID。這支 Flow 的建立者資訊如下：</p>
+<pre>CreatorObjectId : 【Judy's Object ID】</pre>
+<p>若確認這支 Flow 是本人建立的，就可以把這組 ID 視為你的 Creator Object ID。統計結果顯示，此 ID 對應共 115 支 Flow，數量吻合：</p>
+<pre>115  【Judy's Object ID】</pre>
+
+<h2>第一階段：設定與篩選</h2>
+<p>步驟 1 — 設定你的 Object ID 變數：</p>
+<pre>$myObjectId = "【Judy's Object ID】"</pre>
+
+<p>步驟 2 — 只取出你本人建立的 Flow：</p>
+<pre>$myFlows = $flows | Where-Object {
+    $_.CreatedBy.objectId -eq $myObjectId
+}</pre>
+
+<p>步驟 3 — 確認數量（預期應為 115）：</p>
+<pre>$myFlows.Count
+
+115</pre>
+
+<h2>第二階段：整理輸出</h2>
+<p>完整欄位、依建立時間排序：</p>
+<pre>$myFlows |
+    Select-Object DisplayName,
+                  Enabled,
+                  CreatedTime,
+                  LastModifiedTime,
+                  FlowName,
+                  EnvironmentName |
+    Sort-Object CreatedTime -Descending |
+    Format-Table -AutoSize</pre>
+
+<p>只看名稱與啟用狀態的簡化版本：</p>
+<pre>$myFlows |
+    Sort-Object DisplayName |
+    Select-Object DisplayName, Enabled |
+    Format-Table -AutoSize</pre>
+
+<h2>目前進度</h2>
+<ul>
+  <li>已完成：全公司 Flow → 找到你的 Object ID → 篩選出你建立的 115 支 Flow。</li>
+  <li>尚未進行：刪除任何 Flow（先不要刪除）。</li>
+</ul>
+
+<h2>下一階段：加入執行紀錄</h2>
+<p>下一步要查詢這 115 支 Flow 的 Run History／最後執行時間，整理成類似下表的格式，才能用「最後執行時間」而非「最後修改時間」來判斷是否為閒置 Flow，準確度會高很多：</p>
+
+<table>
+  <tr><th>Flow Name</th><th>Enabled</th><th>Last Run</th><th>備註</th></tr>
+  <tr><td>HTTP_JudyTest...</td><td>True</td><td>2026/08/30</td><td>近期有執行</td></tr>
+  <tr><td>TestABC</td><td>False</td><td>2025/02/01</td><td>超過 180 天</td></tr>
+  <tr><td>Old_Test_Flow</td><td>False</td><td>Never</td><td>從未執行過</td></tr>
+  <tr><td>TestSQL</td><td>True</td><td>2024/11/20</td><td>超過 180 天</td></tr>
+</table>
+
+<p>有了「Last Run」欄位之後，才能安全地找出例如「超過 180 天沒執行」的 Flow，再決定哪些要刪除。</p>
+
+<h2>提醒</h2>
+<div class="note">
+  <ul>
+    <li>在確認完整的執行紀錄之前，請勿刪除任何 Flow。</li>
+    <li>判斷閒置與否，優先使用 Run History 的最後執行時間，而非 <code>LastModifiedTime</code>。</li>
+    <li>刪除前建議先做一份完整清單備份（含 DisplayName、FlowName、EnvironmentName），以利日後追溯。</li>
+  </ul>
+</div>
+
+</body>
+</html>
